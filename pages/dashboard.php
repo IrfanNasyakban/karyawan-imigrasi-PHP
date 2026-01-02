@@ -3,10 +3,10 @@ require_once '../config/database.php';
 
 $page_title = 'Dashboard';
 
-// Hitung total karyawan
-$query_total = "SELECT COUNT(*) as total FROM karyawan";
+// Hitung total pegawai
+$query_total = "SELECT COUNT(*) as total FROM pegawai";
 $result_total = mysqli_query($conn, $query_total);
-$total_karyawan = mysqli_fetch_assoc($result_total)['total'];
+$total_pegawai = mysqli_fetch_assoc($result_total)['total'];
 
 include '../includes/header.php';
 ?>
@@ -24,14 +24,14 @@ include '../includes/header.php';
 
     <!-- Cards -->
     <div class="row">
-        <!-- Card Total Karyawan -->
+        <!-- Card Total Pegawai -->
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted mb-2">Total Karyawan</h6>
-                            <h2 class="fw-bold mb-0"><?php echo $total_karyawan; ?></h2>
+                            <h6 class="text-muted mb-2">Total Pegawai</h6>
+                            <h2 class="fw-bold mb-0"><?php echo $total_pegawai; ?></h2>
                         </div>
                         <div class="bg-primary bg-opacity-10 p-3 rounded">
                             <i class="fas fa-users fa-2x text-primary"></i>
@@ -41,27 +41,27 @@ include '../includes/header.php';
             </div>
         </div>
 
-        <!-- Card Menu Data Karyawan -->
+        <!-- Card Menu Data Pegawai -->
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card shadow-sm border-0 h-100 card-hover">
                 <div class="card-body d-flex align-items-center justify-content-center">
-                    <a href="karyawan/index.php" class="text-decoration-none text-center w-100">
+                    <a href="pegawai/index.php" class="text-decoration-none text-center w-100">
                         <i class="fas fa-users-cog fa-3x text-success mb-3"></i>
-                        <h5 class="fw-bold">Data Karyawan</h5>
-                        <p class="text-muted small mb-0">Kelola data karyawan</p>
+                        <h5 class="fw-bold">Data Pegawai</h5>
+                        <p class="text-muted small mb-0">Kelola data pegawai</p>
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Card Tambah Karyawan -->
+        <!-- Card Tambah pegawai -->
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card shadow-sm border-0 h-100 card-hover">
                 <div class="card-body d-flex align-items-center justify-content-center">
-                    <a href="karyawan/tambah.php" class="text-decoration-none text-center w-100">
+                    <a href="pegawai/tambah.php" class="text-decoration-none text-center w-100">
                         <i class="fas fa-user-plus fa-3x text-info mb-3"></i>
-                        <h5 class="fw-bold">Tambah Karyawan</h5>
-                        <p class="text-muted small mb-0">Tambah karyawan baru</p>
+                        <h5 class="fw-bold">Tambah Pegawai</h5>
+                        <p class="text-muted small mb-0">Tambah pegawai baru</p>
                     </a>
                 </div>
             </div>
@@ -77,8 +77,8 @@ include '../includes/header.php';
                         <i class="fas fa-info-circle me-2"></i>Informasi Sistem
                     </h5>
                     <p class="mb-0">
-                        Sistem ini digunakan untuk mengelola data karyawan di Kantor Imigrasi Kelas I TPI Lhokseumawe. 
-                        Anda dapat melihat, menambah, mengubah, dan menghapus data karyawan melalui menu yang tersedia.
+                        Sistem ini digunakan untuk mengelola data pegawai di Kantor Imigrasi Kelas I TPI Lhokseumawe. 
+                        Anda dapat melihat, menambah, mengubah, dan menghapus data pegawai melalui menu yang tersedia.
                     </p>
                 </div>
             </div>
