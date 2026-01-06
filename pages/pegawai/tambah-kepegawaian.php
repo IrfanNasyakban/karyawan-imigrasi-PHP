@@ -28,7 +28,7 @@ if (isset($_POST['submit'])) {
             ('$idPegawai', '$statusKepegawaian', '$jabatan', '$tmtJabatan', '$bagianKerja', '$eselon', '$angkatanPejim', '$ppns', '$tmtPensiun')";
 
         if (mysqli_query($conn, $query)) {
-            header("Location: index.php?message=tambah");
+            header("Location: tambah-pangkat.php?idPegawai=$idPegawai");
             exit();
         } else {
             $error = "Gagal menambahkan data: " . mysqli_error($conn);
@@ -61,7 +61,13 @@ include '../../includes/header.php';
 
                         <div class="mb-3">
                             <label class="form-label">Status Kepegawaian <span class="text-danger">*</span></label>
-                            <input type="text" name="statusKepegawaian" class="form-control" required>
+                            <select name="statusKepegawaian" class="form-select" required>
+                                <option value="" selected disabled>-- Pilih Status Kepegawaian --</option>
+                                <option value="PNS">PNS</option>
+                                <option value="CPNS">CPNS</option>
+                                <option value="PPPK">PPPK</option>
+                                <option value="OUTSOURCING">OUTSOURCING</option>
+                            </select>
                         </div>
 
                         <div class="mb-3">
@@ -103,9 +109,6 @@ include '../../includes/header.php';
                             <button type="submit" name="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-2"></i>Selanjutnya
                             </button>
-                            <a href="index.php" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>Kembali
-                            </a>
                         </div>
                     </form>
                 </div>

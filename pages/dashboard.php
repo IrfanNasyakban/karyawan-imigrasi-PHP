@@ -58,7 +58,7 @@ include '../includes/header.php';
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card shadow-sm border-0 h-100 card-hover">
                 <div class="card-body d-flex align-items-center justify-content-center">
-                    <a href="pegawai/tambah.php" class="text-decoration-none text-center w-100">
+                    <a href="pegawai/tambah-pegawai.php" class="text-decoration-none text-center w-100">
                         <i class="fas fa-user-plus fa-3x text-info mb-3"></i>
                         <h5 class="fw-bold">Tambah Pegawai</h5>
                         <p class="text-muted small mb-0">Tambah pegawai baru</p>

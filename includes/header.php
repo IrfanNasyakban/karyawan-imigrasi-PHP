@@ -21,7 +21,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
         <div class="container-fluid">
-            <a class="navbar-brand" href="../pages/dashboard.php">
+            <a class="navbar-brand" href="/karyawan-imigrasi/pages/dashboard.php">
                 <i class="fas fa-building me-2"></i>
                 Kantor Imigrasi Lhokseumawe
             </a>
@@ -31,13 +31,23 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="../pages/dashboard.php">
+                        <a class="nav-link" href="/karyawan-imigrasi/pages/dashboard.php">
                             <i class="fas fa-home me-1"></i>Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../pages/karyawan/index.php">
-                            <i class="fas fa-users me-1"></i>Data Karyawan
+                        <a class="nav-link" href="/karyawan-imigrasi/pages/pegawai/list-pegawai.php">
+                            <i class="fas fa-users me-1"></i>Data Pegawai
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/karyawan-imigrasi/pages/pegawai/list-kepegawaian.php">
+                            <i class="fas fa-users me-1"></i>Data Kepegawaian
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/karyawan-imigrasi/pages/pegawai/list-pangkat.php">
+                            <i class="fas fa-users me-1"></i>Data Pangkat
                         </a>
                     </li>
                 </ul>

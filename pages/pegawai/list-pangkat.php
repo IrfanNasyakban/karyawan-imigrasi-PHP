@@ -1,10 +1,10 @@
 <?php
 require_once '../../config/database.php';
 
-$page_title = 'Data Pegawai';
+$page_title = 'Data Pangkat';
 
-// Ambil data pegawai
-$query = "SELECT * FROM pegawai";
+// Ambil data pangkat
+$query = "SELECT * FROM pangkat";
 $result = mysqli_query($conn, $query);
 
 include '../../includes/header.php';
@@ -15,12 +15,12 @@ include '../../includes/header.php';
     <div class="row mb-4">
         <div class="col-md-6">
             <h2 class="fw-bold">
-                <i class="fas fa-users me-2"></i>Data Pegawai
+                <i class="fas fa-users me-2"></i>Data Pangkat
             </h2>
         </div>
         <div class="col-md-6 text-end">
-            <a href="tambah-pegawai.php" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Tambah Pegawai
+            <a href="tambah-pangkat.php" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Tambah Pangkat
             </a>
         </div>
     </div>
@@ -30,9 +30,9 @@ include '../../includes/header.php';
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             <?php 
-                if ($_GET['message'] == 'tambah') echo 'Data pegawai berhasil ditambahkan!';
-                if ($_GET['message'] == 'edit') echo 'Data pegawai berhasil diubah!';
-                if ($_GET['message'] == 'hapus') echo 'Data pegawai berhasil dihapus!';
+                if ($_GET['message'] == 'tambah') echo 'Data pangkat berhasil ditambahkan!';
+                if ($_GET['message'] == 'edit') echo 'Data pangkat berhasil diubah!';
+                if ($_GET['message'] == 'hapus') echo 'Data pangkat berhasil dihapus!';
             ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -42,24 +42,14 @@ include '../../includes/header.php';
     <div class="card shadow-sm border-0">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="tableKaryawan" class="table table-striped table-hover">
+                <table id="table-pangkat" class="table table-striped table-hover">
                     <thead class="table-dark">
                         <tr>
                             <th>No</th>
-                            <th>NIP</th>
-                            <th>Nama</th>
-                            <th>Gelar Depan</th>
-                            <th>Gelar Belakang</th>
-                            <th>Nama dengan Gelar</th>
-                            <th>Tempat Lahir</th>
-                            <th>Tanggal Lahir</th>
-                            <th>Gender</th>
-                            <th>Agama</th>
-                            <th>Status Pegawai</th>
-                            <th>Email Pribadi</th>
-                            <th>Email Dinas</th>
-                            <th>No Telp</th>
-                            <th>Hobi</th>
+                            <th>Nama Pegawai</th>
+                            <th>Pangkat</th>
+                            <th>Golongan Ruang</th>
+                            <th>TMT Pangkat</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -70,20 +60,10 @@ include '../../includes/header.php';
                         ?>
                         <tr>
                             <td><?php echo $no++; ?></td>
-                            <td><?php echo $row['nip']; ?></td>
-                            <td><?php echo $row['nama']; ?></td>
-                            <td><?php echo $row['gelarDepan']; ?></td>
-                            <td><?php echo $row['gelarBelakang']; ?></td>
                             <td><?php echo $row['namaDenganGelar']; ?></td>
-                            <td><?php echo $row['tempatLahir']; ?></td>
-                            <td><?php echo $row['tanggalLahir']; ?></td>
-                            <td><?php echo $row['gender']; ?></td>
-                            <td><?php echo $row['agama']; ?></td>
-                            <td><?php echo $row['statusPegawai']; ?></td>
-                            <td><?php echo $row['emailPribadi']; ?></td>
-                            <td><?php echo $row['emailDinas']; ?></td>
-                            <td><?php echo $row['noHp']; ?></td>
-                            <td><?php echo $row['hobi']; ?></td>
+                            <td><?php echo $row['pangkat']; ?></td>
+                            <td><?php echo $row['golonganRuang']; ?></td>
+                            <td><?php echo $row['tmtPangkat']; ?></td>
                             <td>
                                 <a href="detail.php?id=<?php echo $row['id']; ?>" class="btn btn-info btn-sm" title="Detail">
                                     <i class="fas fa-eye"></i>

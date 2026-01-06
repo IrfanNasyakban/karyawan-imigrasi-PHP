@@ -150,7 +150,7 @@ include '../../includes/header.php';
                             <button type="submit" name="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-2"></i>Selanjutnya
                             </button>
-                            <a href="index.php" class="btn btn-secondary">
+                            <a href="list-pegawai.php" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left me-2"></i>Kembali
                             </a>
                         </div>
