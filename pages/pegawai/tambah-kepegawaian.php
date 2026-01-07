@@ -36,6 +36,19 @@ if (isset($_POST['submit'])) {
     }
 }
 
+$query = "SELECT namaDenganGelar 
+          FROM pegawai 
+          WHERE idPegawai = '" . mysqli_real_escape_string($conn, $idPegawai) . "'";
+
+$namaDenganGelar = mysqli_query($conn, $query);
+
+if ($namaDenganGelar && mysqli_num_rows($namaDenganGelar) > 0) {
+    $pegawai = mysqli_fetch_assoc($namaDenganGelar);
+    $namaDenganGelar = $pegawai['namaDenganGelar'];
+} else {
+    die("Data pegawai dengan ID $idPegawai tidak ditemukan.");
+}
+
 
 include '../../includes/header.php';
 ?>
@@ -55,6 +68,10 @@ include '../../includes/header.php';
                             <i class="fas fa-exclamation-circle me-2"></i><?php echo $error; ?>
                         </div>
                     <?php endif; ?>
+
+                    <div class="mb-4">
+                        <strong>Nama Pegawai:</strong> <?php echo htmlspecialchars($namaDenganGelar); ?>
+                    </div>
 
                     <form method="POST" action="">
                         <input type="hidden" name="idPegawai" value="<?php echo htmlspecialchars($idPegawai); ?>">

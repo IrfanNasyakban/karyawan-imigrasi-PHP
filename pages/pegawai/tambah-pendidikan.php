@@ -1,7 +1,7 @@
 <?php
 require_once '../../config/database.php';
 
-$page_title = 'Tambah Data Pangkat';
+$page_title = 'Tambah Data Pendidikan';
 
 $idPegawai = $_GET['idPegawai'] ?? null;
 if (!$idPegawai) {
@@ -10,20 +10,18 @@ if (!$idPegawai) {
 
 if (isset($_POST['submit'])) {
     $idPegawai = mysqli_real_escape_string($conn, $_POST['idPegawai'] ?? '');
-    $pangkat = mysqli_real_escape_string($conn, $_POST['pangkat'] ?? '');
-    $golonganRuang = mysqli_real_escape_string($conn, $_POST['golonganRuang'] ?? '');
-    $tmtPangkat = mysqli_real_escape_string($conn, $_POST['tmtPangkat'] ?? '');
+    $pendidikanTerakhir = mysqli_real_escape_string($conn, $_POST['pendidikanTerakhir'] ?? '');
 
     if ($idPegawai === '') {
         $error = "ID Pegawai kosong. Pastikan alur tambah pegawai benar.";
     } else {
-        $query = "INSERT INTO pangkat 
-            (idPegawai, pangkat, golonganRuang, tmtPangkat)
+        $query = "INSERT INTO pendidikan
+            (idPegawai, pendidikanTerakhir)
             VALUES
-            ('$idPegawai', '$pangkat', '$golonganRuang', '$tmtPangkat')";
+            ('$idPegawai', '$pendidikanTerakhir')";
 
         if (mysqli_query($conn, $query)) {
-            header("Location: tambah-alamat.php?idPegawai=$idPegawai");
+            header("Location: tambah-fisik.php?idPegawai=$idPegawai");
             exit();
         } else {
             $error = "Gagal menambahkan data: " . mysqli_error($conn);
@@ -44,7 +42,6 @@ if ($namaDenganGelar && mysqli_num_rows($namaDenganGelar) > 0) {
     die("Data pegawai dengan ID $idPegawai tidak ditemukan.");
 }
 
-
 include '../../includes/header.php';
 ?>
 
@@ -54,7 +51,7 @@ include '../../includes/header.php';
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">
-                        <i class="fas fa-user-plus me-2"></i>Tambah Data Pangkat
+                        <i class="fas fa-user-plus me-2"></i>Tambah Data Pendidikan
                     </h4>
                 </div>
                 <div class="card-body">
@@ -72,18 +69,8 @@ include '../../includes/header.php';
                         <input type="hidden" name="idPegawai" value="<?php echo htmlspecialchars($idPegawai); ?>">
 
                         <div class="mb-3">
-                            <label class="form-label">Pangkat <span class="text-danger">*</span></label>
-                            <input type="text" name="pangkat" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Golongan Ruang <span class="text-danger">*</span></label>
-                            <input type="text" name="tmtJabatan" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Terhitung Mulai Tanggal Pangkat <span class="text-danger">*</span></label>
-                            <input type="date" name="tmtPangkat" class="form-control" required>
+                            <label class="form-label">Pendidikan Terakhir <span class="text-danger">*</span></label>
+                            <input type="text" name="pendidikanTerakhir" class="form-control" required>
                         </div>
 
                         <div class="d-flex gap-2">

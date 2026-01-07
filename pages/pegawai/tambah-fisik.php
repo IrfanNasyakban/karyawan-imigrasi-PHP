@@ -1,7 +1,7 @@
 <?php
 require_once '../../config/database.php';
 
-$page_title = 'Tambah Data Pangkat';
+$page_title = 'Tambah Data Fisik';
 
 $idPegawai = $_GET['idPegawai'] ?? null;
 if (!$idPegawai) {
@@ -10,20 +10,23 @@ if (!$idPegawai) {
 
 if (isset($_POST['submit'])) {
     $idPegawai = mysqli_real_escape_string($conn, $_POST['idPegawai'] ?? '');
-    $pangkat = mysqli_real_escape_string($conn, $_POST['pangkat'] ?? '');
-    $golonganRuang = mysqli_real_escape_string($conn, $_POST['golonganRuang'] ?? '');
-    $tmtPangkat = mysqli_real_escape_string($conn, $_POST['tmtPangkat'] ?? '');
+    $tinggiBadan = mysqli_real_escape_string($conn, $_POST['tinggiBadan'] ?? '');
+    $beratBadan = mysqli_real_escape_string($conn, $_POST['beratBadan'] ?? '');
+    $jenisRambut = mysqli_real_escape_string($conn, $_POST['jenisRambut'] ?? '');
+    $warnaRambut = mysqli_real_escape_string($conn, $_POST['warnaRambut'] ?? '');
+    $bentukWajah = mysqli_real_escape_string($conn, $_POST['bentukWajah'] ?? '');
+    $warnaKulit = mysqli_real_escape_string($conn, $_POST['warnaKulit'] ?? '');
 
     if ($idPegawai === '') {
         $error = "ID Pegawai kosong. Pastikan alur tambah pegawai benar.";
     } else {
-        $query = "INSERT INTO pangkat 
-            (idPegawai, pangkat, golonganRuang, tmtPangkat)
+        $query = "INSERT INTO fisik
+            (idPegawai, tinggiBadan, beratBadan, jenisRambut, warnaRambut, bentukWajah, warnaKulit)
             VALUES
-            ('$idPegawai', '$pangkat', '$golonganRuang', '$tmtPangkat')";
+            ('$idPegawai', '$tinggiBadan', '$beratBadan', '$jenisRambut', '$warnaRambut', '$bentukWajah', '$warnaKulit')";
 
         if (mysqli_query($conn, $query)) {
-            header("Location: tambah-alamat.php?idPegawai=$idPegawai");
+            header("Location: tambah-ukuran-dinas.php?idPegawai=$idPegawai");
             exit();
         } else {
             $error = "Gagal menambahkan data: " . mysqli_error($conn);
@@ -54,7 +57,7 @@ include '../../includes/header.php';
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">
-                        <i class="fas fa-user-plus me-2"></i>Tambah Data Pangkat
+                        <i class="fas fa-user-plus me-2"></i>Tambah Data Fisik
                     </h4>
                 </div>
                 <div class="card-body">
@@ -65,25 +68,40 @@ include '../../includes/header.php';
                     <?php endif; ?>
 
                     <div class="mb-4">
-                        <strong>Pegawai:</strong> <?php echo htmlspecialchars($namaDenganGelar); ?>
+                        <strong>Nama Pegawai:</strong> <?php echo htmlspecialchars($namaDenganGelar); ?>
                     </div>
 
                     <form method="POST" action="">
                         <input type="hidden" name="idPegawai" value="<?php echo htmlspecialchars($idPegawai); ?>">
 
                         <div class="mb-3">
-                            <label class="form-label">Pangkat <span class="text-danger">*</span></label>
-                            <input type="text" name="pangkat" class="form-control" required>
+                            <label class="form-label">Tinggi Badan (CM) <span class="text-danger">*</span></label>
+                            <input type="text" name="tinggiBadan" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Golongan Ruang <span class="text-danger">*</span></label>
-                            <input type="text" name="tmtJabatan" class="form-control" required>
+                            <label class="form-label">Berat Badan (KG) <span class="text-danger">*</span></label>
+                            <input type="text" name="beratBadan" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Terhitung Mulai Tanggal Pangkat <span class="text-danger">*</span></label>
-                            <input type="date" name="tmtPangkat" class="form-control" required>
+                            <label class="form-label">Jenis Rambut <span class="text-danger">*</span></label>
+                            <input type="text" name="jenisRambut" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Warna Rambut <span class="text-danger">*</span></label>
+                            <input type="text" name="warnaRambut" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Bentuk Wajah <span class="text-danger">*</span></label>
+                            <input type="text" name="bentukWajah" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Warna Kulit <span class="text-danger">*</span></label>
+                            <input type="text" name="warnaKulit" class="form-control" required>
                         </div>
 
                         <div class="d-flex gap-2">
