@@ -271,6 +271,12 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
 
             <!-- Data Pegawai -->
             <h6 class="menu-title">Data Pegawai</h6>
+
+            <a href="/karyawan-imigrasi/pages/pegawai/list-pegawai.php" 
+               class="menu-item <?php echo (basename($_SERVER['PHP_SELF']) == 'list-pegawai.php') ? 'active' : ''; ?>">
+                <i class="fas fa-user"></i>
+                <span>Pegawai</span>
+            </a>
             
             <a href="/karyawan-imigrasi/pages/pegawai/list-kepegawaian.php" 
                class="menu-item <?php echo (basename($_SERVER['PHP_SELF']) == 'list-kepegawaian.php') ? 'active' : ''; ?>">
@@ -314,8 +320,8 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
                 <span>Fisik</span>
             </a>
 
-            <a href="/karyawan-imigrasi/pages/pegawai/list-dinas.php" 
-               class="menu-item <?php echo (basename($_SERVER['PHP_SELF']) == 'list-dinas.php') ? 'active' : ''; ?>">
+            <a href="/karyawan-imigrasi/pages/pegawai/list-ukuran-dinas.php" 
+               class="menu-item <?php echo (basename($_SERVER['PHP_SELF']) == 'list-ukuran-dinas.php') ? 'active' : ''; ?>">
                 <i class="fas fa-building"></i>
                 <span>Dinas</span>
             </a>

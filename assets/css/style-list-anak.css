@@ -1,0 +1,288 @@
+/* ===================================
+   ANAK PAGE SPECIFIC STYLES (SIMPLIFIED)
+   Disesuaikan dengan struktur database yang simple
+   =================================== */
+
+/* Pegawai Card Container */
+.pegawai-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.pegawai-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+}
+
+/* Pegawai Header */
+.pegawai-header {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pegawai-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.pegawai-details {
+    flex: 1;
+}
+
+.pegawai-name {
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.pegawai-nip {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+    font-weight: 500;
+}
+
+.pegawai-badge {
+    display: flex;
+    align-items: center;
+}
+
+.pegawai-badge .badge {
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 25px;
+}
+
+/* Table Anak Styling */
+.table-anak {
+    margin: 0;
+}
+
+.table-anak thead {
+    background: #f8fafc;
+}
+
+.table-anak thead th {
+    color: #0c0e10;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 15px 20px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.table-anak tbody td {
+    padding: 18px 20px;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table-anak tbody tr:hover {
+    background: linear-gradient(to right, #fefce8 0%, #fef9c3 100%);
+}
+
+.table-anak tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Nama Anak - Bold */
+.table-anak tbody td strong {
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.table-anak tbody td strong i {
+    color: #3b82f6;
+}
+
+.table-anak .btn-sm {
+    padding: 8px 15px;
+    font-size: 12px;
+}
+
+/* Empty State Customization */
+.empty-state {
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.empty-state i {
+    font-size: 100px;
+    color: #cbd5e1;
+    margin-bottom: 30px;
+}
+
+.empty-state h5 {
+    color: #475569;
+    font-weight: 600;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    color: #94a3b8;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .pegawai-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .pegawai-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .pegawai-name {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .pegawai-header {
+        padding: 15px 20px;
+    }
+
+    .pegawai-number {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .pegawai-name {
+        font-size: 16px;
+    }
+
+    .pegawai-nip {
+        font-size: 12px;
+    }
+
+    .table-anak thead th {
+        font-size: 11px;
+        padding: 12px 15px;
+    }
+
+    .table-anak tbody td {
+        font-size: 13px;
+        padding: 15px;
+    }
+
+    .table-anak tbody td strong {
+        font-size: 14px;
+    }
+
+    .action-buttons {
+        flex-direction: row;
+        gap: 5px;
+    }
+
+    .table-anak .btn-sm {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 576px) {
+    .pegawai-card {
+        margin-bottom: 20px;
+    }
+
+    .pegawai-header {
+        padding: 15px;
+    }
+
+    .pegawai-info {
+        gap: 15px;
+    }
+
+    .table-anak thead th {
+        padding: 10px;
+        font-size: 10px;
+    }
+
+    .table-anak tbody td {
+        padding: 12px 10px;
+        font-size: 12px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .pegawai-card {
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+        margin-bottom: 30px;
+    }
+
+    .pegawai-header {
+        background: #f8fafc !important;
+        color: #000 !important;
+    }
+
+    .pegawai-number {
+        background: #94a3b8 !important;
+    }
+
+    .action-buttons {
+        display: none !important;
+    }
+
+    .table-anak thead th {
+        background: #f1f5f9 !important;
+        color: #000 !important;
+    }
+}
+
+/* Animation untuk Card */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pegawai-card {
+    animation: slideInUp 0.5s ease-out;
+}
+
+.pegawai-card:nth-child(1) { animation-delay: 0.1s; }
+.pegawai-card:nth-child(2) { animation-delay: 0.2s; }
+.pegawai-card:nth-child(3) { animation-delay: 0.3s; }
+.pegawai-card:nth-child(4) { animation-delay: 0.4s; }
+.pegawai-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* Highlight Hover Effect */
+.table-anak tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table-anak tbody td:first-child {
+    font-weight: 600;
+    color: #0891b2;
+}

@@ -7,22 +7,25 @@ $page_title = 'Data Pegawai';
 $query = "SELECT * FROM pegawai";
 $result = mysqli_query($conn, $query);
 
-include '../../includes/header.php';
+include '../../includes/sidebar.php';
 ?>
 
-<div class="container my-5">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h2 class="fw-bold">
-                <i class="fas fa-users me-2"></i>Data Pegawai
-            </h2>
+<link rel="stylesheet" href="../../assets/css/style-tables.css">
+
+<div class="container-fluid px-4 py-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <h2><i class="fas fa-user me-2"></i>Data Pegawai</h2>
+            <p>Sistem Informasi Pegawai - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
         </div>
-        <div class="col-md-6 text-end">
-            <a href="tambah-pegawai.php" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Tambah Pegawai
-            </a>
-        </div>
+        <i class="fas fa-users page-header-icon d-none d-md-block"></i>
+    </div>
+
+    <div class="action-bar">
+        <a href="tambah-pegawai.php" class="btn-add">
+            <i class="fas fa-plus"></i> Tambah Data
+        </a>
     </div>
 
     <!-- Alert -->
@@ -39,7 +42,6 @@ include '../../includes/header.php';
     <?php endif; ?>
 
     <!-- Table -->
-    <div class="card shadow-sm border-0">
         <div class="card-body">
             <div class="table-responsive">
                 <table id="table-karyawan" class="table table-striped table-hover">
@@ -101,7 +103,6 @@ include '../../includes/header.php';
                 </table>
             </div>
         </div>
-    </div>
 </div>
 
 <?php include '../../includes/footer.php'; ?>

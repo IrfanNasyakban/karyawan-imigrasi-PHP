@@ -1,19 +1,19 @@
 <?php
 require_once '../../config/database.php';
 
-$page_title = 'Data Pangkat';
+$page_title = 'Data Rekening Pegawai';
 
-// Ambil data pangkat
+// Ambil data Rekening
 $query = "SELECT 
-            pk.idPangkat,
-            pk.idPegawai,
+            r.idRekening,
+            r.idPegawai,
             p.namaDenganGelar,
-            pk.pangkat,
-            pk.golonganRuang,
-            pk.tmtPangkat
-          FROM pangkat pk
-          LEFT JOIN pegawai p ON pk.idPegawai = p.idPegawai
-          ORDER BY pk.idPangkat DESC";
+            r.nomorRekGaji,
+            r.namaBank,
+            r.kantorCabang
+          FROM rekening r
+          LEFT JOIN pegawai p ON r.idPegawai = p.idPegawai
+          ORDER BY r.idRekening DESC";
 
 $result = mysqli_query($conn, $query);
 
@@ -26,14 +26,14 @@ include '../../includes/sidebar.php';
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
-            <h2><i class="fas fa-medal me-2"></i>Data Pangkat</h2>
-            <p>Sistem Informasi Pangkat - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
+            <h2><i class="fas fa-credit-card me-2"></i>Data Rekening</h2>
+            <p>Sistem Informasi Rekening - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
         </div>
         <i class="fas fa-users page-header-icon d-none d-md-block"></i>
     </div>
 
     <div class="action-bar">
-        <a href="tambah-pangkat.php" class="btn-add">
+        <a href="tambah-rekening.php" class="btn-add">
             <i class="fas fa-plus"></i> Tambah Data
         </a>
     </div>
@@ -43,9 +43,9 @@ include '../../includes/sidebar.php';
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             <?php 
-                if ($_GET['message'] == 'tambah') echo 'Data pangkat berhasil ditambahkan!';
-                if ($_GET['message'] == 'edit') echo 'Data pangkat berhasil diubah!';
-                if ($_GET['message'] == 'hapus') echo 'Data pangkat berhasil dihapus!';
+                if ($_GET['message'] == 'tambah') echo 'Data rekening berhasil ditambahkan!';
+                if ($_GET['message'] == 'edit') echo 'Data rekening berhasil diubah!';
+                if ($_GET['message'] == 'hapus') echo 'Data rekening berhasil dihapus!';
             ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -54,14 +54,14 @@ include '../../includes/sidebar.php';
     <!-- Table -->
         <div class="card-body">
             <div class="table-responsive">
-                <table id="table-pangkat" class="table table-striped table-hover">
+                <table id="table-rekening" class="table table-striped table-hover">
                     <thead class="table-dark">
                         <tr>
                             <th>No</th>
                             <th>Nama Pegawai</th>
-                            <th>Pangkat</th>
-                            <th>Golongan Ruang</th>
-                            <th>TMT Pangkat</th>
+                            <th>Nomor Rek Gaji</th>
+                            <th>Nama Bank</th>
+                            <th>Nama Kantor Cabang</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -74,9 +74,9 @@ include '../../includes/sidebar.php';
                         <tr>
                             <td><?php echo $no++; ?></td>
                             <td><?php echo $row['namaDenganGelar']; ?></td>
-                            <td><?php echo $row['pangkat']; ?></td>
-                            <td><?php echo $row['golonganRuang']; ?></td>
-                            <td><?php echo $row['tmtPangkat']; ?></td>
+                            <td><?php echo $row['nomorRekGaji']; ?></td>
+                            <td><?php echo $row['namaBank']; ?></td>
+                            <td><?php echo $row['kantorCabang']; ?></td>
                             <td>
                                 <a href="edit.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm" title="Edit">
                                     <i class="fas fa-edit"></i>
@@ -94,7 +94,7 @@ include '../../includes/sidebar.php';
                                 <div class="empty-state">
                                     <i class="fas fa-inbox"></i>
                                     <h5>Tidak Ada Data</h5>
-                                    <p>Belum ada data pangkat yang tersedia</p>
+                                    <p>Belum ada data Rekening yang tersedia</p>
                                 </div>
                             </td>
                         </tr>
