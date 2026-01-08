@@ -27,7 +27,7 @@ include '../../includes/sidebar.php';
 <link rel="stylesheet" href="../../assets/css/style-tables.css">
 <link rel="stylesheet" href="../../assets/css/style-list-anak.css">
 
-<div class="container-fluid px-4 py-4">
+<div class="container-fluid px-2 py-2">
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
