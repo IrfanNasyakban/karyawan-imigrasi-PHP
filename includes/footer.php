@@ -2,11 +2,16 @@
 
     <?php
     // Deteksi path logo untuk footer
-    if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
+    if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/tambah/') !== false) {
+        $footer_logo_path = '../../../assets/logo_sigawai.png';
+    } 
+    else if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
         $footer_logo_path = '../../assets/logo_sigawai.png';
-    } else {
+    }
+    else {
         $footer_logo_path = '../assets/logo_sigawai.png';
     }
+
     ?>
 
     <!-- Footer -->
@@ -21,7 +26,7 @@
                                 <img src="<?php echo $footer_logo_path; ?>" alt="SI-GAWAI" class="footer-logo-img">
                             </div>
                             <p class="footer-description">
-                                Sistem ini digunakan untuk mengelola data karyawan di Kantor Imigrasi Kelas II TPI Lhokseumawe.
+                                Sistem ini digunakan untuk mengelola data pegawai di Kantor Imigrasi Kelas II TPI Lhokseumawe.
                             </p>
                             <div class="footer-contact-item">
                                 <i class="fas fa-map-marker-alt"></i>

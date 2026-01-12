@@ -12,22 +12,67 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+         body {
+            background-image: url('assets/bg-awal.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+        }
+
+        .header-logo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+        }
+        
+        .header-logo img {
+            height: 60px;
+            width: auto;
+        }
+        
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+        
+        .header-text .main-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffffff;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        
+        .header-text .sub-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: #ffffffff;
+            text-transform: uppercase;
+            margin: 0;
         }
         
         .welcome-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 60px 40px;
+            padding: 20px 20px;
             text-align: center;
             max-width: 600px;
             animation: fadeInUp 0.8s ease;
+            position: relative;
+            z-index: 2;
         }
         
         @keyframes fadeInUp {
@@ -45,14 +90,16 @@
             margin-bottom: 30px;
         }
         
-        .logo-container i {
-            font-size: 80px;
-            color: #667eea;
+        .logo-container img {
+            width: 250px;
+            height: auto;
+            object-fit: contain;
+            max-height: 150px;
         }
         
         h1 {
             color: #333;
-            font-weight: 700;
+            font-weight: 400;
             margin-bottom: 15px;
         }
         
@@ -63,11 +110,11 @@
         }
         
         .btn-start {
-            padding: 15px 50px;
-            font-size: 18px;
+            padding: 10px 30px;
+            font-size: 15px;
             font-weight: 600;
             border-radius: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #748dffff 0%, #6ba9ffff 100%);
             border: none;
             color: white;
             transition: all 0.3s ease;
@@ -77,6 +124,7 @@
         .btn-start:hover {
             transform: translateY(-3px);
             box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+            color: #ffffffff;
         }
         
         .info-text {
@@ -87,13 +135,23 @@
     </style>
 </head>
 <body>
+    <div class="header-logo">
+        <img src="assets/logo_pemasyarakatan.png" alt="Logo Kemenkumham">
+        <img src="assets/logo_imigrasi.png" alt="Logo Imigrasi">
+        <div class="header-text">
+            <p class="main-title">Kementerian Imigrasi dan Pemasyarakatan</p>
+            <p class="sub-title">Kantor Wilayah Direktorat Jenderal Imigrasi Aceh</p>
+            <p class="sub-title">Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
+        </div>
+    </div>
+
     <div class="welcome-card">
         <div class="logo-container">
-            <i class="fas fa-building"></i>
+            <img src="assets/logo_sigawai.png" alt="Logo Imigrasi">
         </div>
         
-        <h1>Sistem Data Karyawan</h1>
-        <p class="subtitle">Kantor Imigrasi Kelas I TPI Lhokseumawe</p>
+        <h4>Sistem Informasi Kepegawaian</h4>
+        <p class="subtitle">Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
         
         <a href="pages/dashboard.php" class="btn btn-start">
             <i class="fas fa-arrow-right me-2"></i>Melanjutkan

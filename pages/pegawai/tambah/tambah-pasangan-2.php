@@ -1,26 +1,25 @@
 <?php
 require_once '../../../config/database.php';
 
-$page_title = 'Tambah Data Alamat';
+$page_title = 'Tambah Data Keluarga';
 
 // Get ID Pegawai dari parameter URL atau POST
 $idPegawai = isset($_GET['idPegawai']) ? $_GET['idPegawai'] : (isset($_POST['idPegawai']) ? $_POST['idPegawai'] : '');
 
 if (isset($_POST['submit'])) {
     $idPegawai = mysqli_real_escape_string($conn, $_POST['idPegawai'] ?? '');
-    $alamatKTP = mysqli_real_escape_string($conn, $_POST['alamatKTP'] ?? '');
-    $alamatDomisili = mysqli_real_escape_string($conn, $_POST['alamatDomisili'] ?? '');
+    $namaPasangan = mysqli_real_escape_string($conn, $_POST['namaPasangan'] ?? '');
 
     if ($idPegawai === '') {
         $error = "ID Pegawai kosong. Pastikan alur tambah pegawai benar.";
     } else {
-        $query = "INSERT INTO alamat
-            (idPegawai, alamatKTP, alamatDomisili)
+        $query = "INSERT INTO pasangan 
+            (idPegawai, namaPasangan)
             VALUES
-            ('$idPegawai', '$alamatKTP', '$alamatDomisili')";
+            ('$idPegawai', '$namaPasangan')";
 
         if (mysqli_query($conn, $query)) {
-            header("Location: ../list-alamat.php");
+            header("Location: ../list-pasangan.php");
             exit();
         } else {
             $error = "Gagal menambahkan data: " . mysqli_error($conn);
@@ -31,8 +30,8 @@ if (isset($_POST['submit'])) {
 // Get all pegawai data for dropdown
 $queryAllPegawai = "SELECT p.idPegawai, p.namaDenganGelar, p.nip 
                     FROM pegawai p
-                    LEFT JOIN alamat a ON p.idPegawai = a.idPegawai
-                    WHERE a.idPegawai IS NULL
+                    LEFT JOIN pasangan ps ON p.idPegawai = ps.idPegawai
+                    WHERE ps.idPegawai IS NULL
                     ORDER BY p.namaDenganGelar ASC";
 $resultAllPegawai = mysqli_query($conn, $queryAllPegawai);
 
@@ -66,10 +65,10 @@ include '../../../includes/sidebar.php';
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
-            <h2><i class="fas fa-map-marked-alt me-2"></i>Tambah Data Alamat</h2>
-            <p>Formulir Penambahan Data Alamat Pegawai - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
+            <h2><i class="fas fa-users me-2"></i>Tambah Data Keluarga</h2>
+            <p>Formulir Penambahan Data Keluarga Pegawai - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
         </div>
-        <i class="fas fa-map-marked-alt page-header-icon d-none d-md-block"></i>
+        <i class="fas fa-users page-header-icon d-none d-md-block"></i>
     </div>
 
     <!-- Alert Error -->
@@ -107,7 +106,7 @@ include '../../../includes/sidebar.php';
 
     <!-- Form Card -->
     <div class="form-card">
-        <form method="POST" action="" id="formAlamat">
+        <form method="POST" action="" id="formKeluarga">
             
             <!-- Section 0: Pilih Pegawai -->
             <div class="form-section">
@@ -156,7 +155,7 @@ include '../../../includes/sidebar.php';
                                 </select>
                             </div>
                             <?php endif; ?>
-                            <small class="form-text">Pilih pegawai untuk menambahkan data identitas</small>
+                            <small class="form-text">Pilih pegawai untuk menambahkan data keluarga</small>
                         </div>
                     </div>
                     
@@ -178,70 +177,36 @@ include '../../../includes/sidebar.php';
                 </div>
             </div>
 
-            <!-- Section: Data Alamat -->
+            <!-- Section 1: Data Pasangan -->
             <div class="form-section">
                 <div class="form-section-header">
-                    <i class="fas fa-map-marked-alt"></i>
-                    <h5>Data Alamat Lengkap</h5>
+                    <i class="fas fa-heart"></i>
+                    <h5>Data Pasangan (Suami/Istri)</h5>
                 </div>
                 <div class="form-section-body">
-                    <div class="row">
-                        <div class="col-12 mb-4">
-                            <label class="form-label">
-                                Alamat Sesuai KTP <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group-textarea">
-                                <span class="input-icon-textarea">
-                                    <i class="fas fa-id-card"></i>
-                                </span>
-                                <textarea 
-                                    name="alamatKTP" 
-                                    class="form-control-textarea" 
-                                    rows="4"
-                                    placeholder="Masukkan alamat lengkap sesuai KTP&#10;Contoh: Jl. Merdeka No. 123, RT 01/RW 02, Kelurahan Kampung Jawa, Kecamatan Banda Sakti, Kota Lhokseumawe, Aceh 24352"
-                                    required></textarea>
-                            </div>
-                            <small class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Tuliskan alamat lengkap sesuai dengan yang tertera di KTP (termasuk RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi, dan Kode Pos)
-                            </small>
-                        </div>
+                    <div class="alert alert-info-custom mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Catatan:</strong> Jika pegawai belum menikah, silakan isi dengan tanda (-) atau tuliskan "Belum Menikah".
                     </div>
 
                     <div class="row">
-                        <div class="col-12 mb-3">
-                            <div class="checkbox-group">
-                                <label class="checkbox-option">
-                                    <input type="checkbox" id="samadenganKTP" onchange="copyAlamat()">
-                                    <span class="checkbox-label">
-                                        <i class="fas fa-copy me-2"></i>
-                                        Alamat Domisili sama dengan Alamat KTP
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label class="form-label">
-                                Alamat Domisili (Tempat Tinggal Saat Ini) <span class="text-danger">*</span>
+                                Nama Pasangan <span class="text-danger">*</span>
                             </label>
-                            <div class="input-group-textarea">
-                                <span class="input-icon-textarea">
-                                    <i class="fas fa-home"></i>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-user-friends"></i>
                                 </span>
-                                <textarea 
-                                    name="alamatDomisili" 
-                                    id="alamatDomisili"
-                                    class="form-control-textarea" 
-                                    rows="4"
-                                    placeholder="Masukkan alamat domisili saat ini&#10;Contoh: Jl. Medan-Banda Aceh No. 45, RT 03/RW 04, Desa Muara Dua, Kecamatan Lhokseumawe Utara, Kota Lhokseumawe, Aceh 24356"
-                                    required></textarea>
+                                <input type="text" 
+                                       name="namaPasangan" 
+                                       class="form-control" 
+                                       placeholder="Contoh: Ahmad Sulaiman, S.E. atau (-) jika belum menikah"
+                                       required>
                             </div>
                             <small class="form-text">
                                 <i class="fas fa-info-circle me-1"></i>
-                                Alamat tempat tinggal saat ini (jika berbeda dengan alamat KTP)
+                                Nama lengkap suami/istri sesuai KTP atau isi dengan (-) jika belum menikah
                             </small>
                         </div>
                     </div>
@@ -251,7 +216,7 @@ include '../../../includes/sidebar.php';
             <!-- Form Actions -->
             <div class="form-actions">
                 <button type="submit" name="submit" class="btn-submit">
-                    <i class="fas fa-arrow-right me-2"></i>Selanjutnya
+                    <i class="fas fa-save me-2"></i>Simpan Data
                 </button>
             </div>
         </form>
@@ -276,33 +241,31 @@ function updatePegawaiInfo(selectElement) {
     }
 }
 
-// Copy alamat KTP ke alamat Domisili
-function copyAlamat() {
-    const checkbox = document.getElementById('samadenganKTP');
-    const alamatKTP = document.querySelector('textarea[name="alamatKTP"]');
-    const alamatDomisili = document.getElementById('alamatDomisili');
+// Auto scroll to active step
+document.addEventListener('DOMContentLoaded', function() {
+    const progressSteps = document.querySelector('.progress-steps');
+    const activeStep = document.querySelector('.step.active');
     
-    if (checkbox.checked) {
-        alamatDomisili.value = alamatKTP.value;
-        alamatDomisili.readOnly = true;
-        alamatDomisili.style.backgroundColor = '#f3f4f6';
-    } else {
-        alamatDomisili.value = '';
-        alamatDomisili.readOnly = false;
-        alamatDomisili.style.backgroundColor = 'white';
+    if (progressSteps && activeStep) {
+        const scrollLeft = activeStep.offsetLeft - (progressSteps.offsetWidth / 2) + (activeStep.offsetWidth / 2);
+        progressSteps.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+        });
     }
-}
-
-// Update alamat domisili saat alamat KTP berubah (jika checkbox dicentang)
-document.querySelector('textarea[name="alamatKTP"]').addEventListener('input', function() {
-    const checkbox = document.getElementById('samadenganKTP');
-    if (checkbox.checked) {
-        document.getElementById('alamatDomisili').value = this.value;
-    }
+    
+    progressSteps.addEventListener('scroll', function() {
+        const isScrolledToEnd = this.scrollLeft + this.clientWidth >= this.scrollWidth - 10;
+        if (isScrolledToEnd) {
+            this.classList.add('scrolled-end');
+        } else {
+            this.classList.remove('scrolled-end');
+        }
+    });
 });
 
 // Form validation
-document.getElementById('formAlamat').addEventListener('submit', function(e) {
+document.getElementById('formKeluarga').addEventListener('submit', function(e) {
     const requiredFields = this.querySelectorAll('[required]');
     let isValid = true;
     
@@ -322,12 +285,6 @@ document.getElementById('formAlamat').addEventListener('submit', function(e) {
 });
 
 // Remove invalid class on input
-document.querySelectorAll('.form-control-textarea').forEach(input => {
-    input.addEventListener('input', function() {
-        this.classList.remove('is-invalid');
-    });
-});
-
 document.querySelectorAll('.form-control').forEach(input => {
     input.addEventListener('input', function() {
         this.classList.remove('is-invalid');

@@ -39,7 +39,7 @@ include '../../includes/sidebar.php';
 
     <div class="action-bar">
         <div class="action-bar-left">
-            <a href="tambah-anak.php" class="btn-add">
+            <a href="tambah/tambah-anak-2.php" class="btn-add">
                 <i class="fas fa-plus"></i> Tambah Data
             </a>
         </div>
@@ -171,7 +171,7 @@ include '../../includes/sidebar.php';
                 <i class="fas fa-child"></i>
                 <h5>Tidak Ada Data</h5>
                 <p>Belum ada data anak pegawai yang tersedia</p>
-                <a href="tambah-anak.php" class="btn-add mt-3">
+                <a href="tambah/tambah-anak-2.php" class="btn-add mt-3">
                     <i class="fas fa-plus"></i> Tambah Data Anak
                 </a>
             </div>

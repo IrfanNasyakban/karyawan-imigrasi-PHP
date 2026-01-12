@@ -1,14 +1,21 @@
 <?php
 // Deteksi path logo berdasarkan lokasi file
-$depth = substr_count($_SERVER['PHP_SELF'], '/') - 2; // Hitung kedalaman folder
+$depth = substr_count($_SERVER['PHP_SELF'], '/') - 2;
 $logo_path = str_repeat('../', $depth - 1) . 'assets/logo_sigawai.png';
 
 // Alternatif: deteksi manual
-if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
-    $logo_path = '../../assets/logo_sigawai.png';
-} else {
+if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/tambah/') !== false) {
+        $logo_path = '../../../assets/logo_sigawai.png';
+    } 
+    else if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
+        $logo_path = '../../assets/logo_sigawai.png';
+    }
+else {
     $logo_path = '../assets/logo_sigawai.png';
 }
+
+// Deteksi apakah ini halaman dashboard
+$is_dashboard = (basename($_SERVER['PHP_SELF']) == 'dashboard.php');
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -107,6 +114,7 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
             color: white;
             text-decoration: none;
             border-left: 3px solid transparent;
+            transition: all 0.3s ease;
         }
 
         .menu-item:hover {
@@ -172,7 +180,7 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
             min-height: 100vh;
         }
 
-        /* Top Bar */
+        /* Top Bar - Default (untuk halaman selain dashboard) */
         .top-bar {
             background: white;
             padding: 15px 30px;
@@ -183,6 +191,13 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
         .top-bar img {
             max-width: 250px;
             height: auto;
+        }
+
+        /* Top Bar Transparent - Hanya untuk Dashboard */
+        .top-bar.transparent {
+            background: transparent;
+            box-shadow: none;
+            padding: 15px 30px;
         }
 
         /* Mobile */
@@ -354,8 +369,8 @@ if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Top Bar -->
-        <div class="top-bar">
+        <!-- Top Bar dengan kondisi transparent untuk dashboard -->
+        <div class="top-bar <?php echo $is_dashboard ? 'transparent' : ''; ?>">
             <img src="<?php echo $logo_path; ?>" alt="SI-GAWAI">
         </div>
 

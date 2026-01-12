@@ -31,7 +31,7 @@ include '../../includes/sidebar.php';
     </div>
 
     <div class="action-bar">
-        <a href="tambah-pasangan.php" class="btn-add">
+        <a href="tambah/tambah-pasangan-2.php" class="btn-add">
             <i class="fas fa-plus"></i> Tambah Data
         </a>
     </div>

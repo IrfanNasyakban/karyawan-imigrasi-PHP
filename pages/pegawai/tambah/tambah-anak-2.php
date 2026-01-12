@@ -1,29 +1,50 @@
 <?php
 require_once '../../../config/database.php';
 
-$page_title = 'Tambah Data Alamat';
+$page_title = 'Tambah Data Keluarga';
 
 // Get ID Pegawai dari parameter URL atau POST
 $idPegawai = isset($_GET['idPegawai']) ? $_GET['idPegawai'] : (isset($_POST['idPegawai']) ? $_POST['idPegawai'] : '');
 
 if (isset($_POST['submit'])) {
     $idPegawai = mysqli_real_escape_string($conn, $_POST['idPegawai'] ?? '');
-    $alamatKTP = mysqli_real_escape_string($conn, $_POST['alamatKTP'] ?? '');
-    $alamatDomisili = mysqli_real_escape_string($conn, $_POST['alamatDomisili'] ?? '');
+    $jumlahAnak = intval($_POST['jumlahAnak'] ?? 0);
 
     if ($idPegawai === '') {
         $error = "ID Pegawai kosong. Pastikan alur tambah pegawai benar.";
     } else {
-        $query = "INSERT INTO alamat
-            (idPegawai, alamatKTP, alamatDomisili)
-            VALUES
-            ('$idPegawai', '$alamatKTP', '$alamatDomisili')";
-
-        if (mysqli_query($conn, $query)) {
-            header("Location: ../list-alamat.php");
-            exit();
+        // Insert data anak jika ada
+        if ($jumlahAnak > 0) {
+            $successAnak = true;
+            $successCount = 0;
+            
+            for ($i = 1; $i <= $jumlahAnak; $i++) {
+                $namaAnak = mysqli_real_escape_string($conn, $_POST["namaAnak$i"] ?? '');
+                
+                if (!empty($namaAnak)) {
+                    $queryAnak = "INSERT INTO anak (idPegawai, namaAnak) 
+                                 VALUES ('$idPegawai', '$namaAnak')";
+                    
+                    if (mysqli_query($conn, $queryAnak)) {
+                        $successCount++;
+                    } else {
+                        $successAnak = false;
+                        $error = "Gagal menambahkan data anak ke-$i: " . mysqli_error($conn);
+                        break;
+                    }
+                }
+            }
+            
+            if ($successAnak && $successCount > 0) {
+                header("Location: ../list-anak.php");
+                exit();
+            } elseif ($successCount == 0) {
+                $error = "Tidak ada data anak yang berhasil ditambahkan.";
+            }
         } else {
-            $error = "Gagal menambahkan data: " . mysqli_error($conn);
+            // Jika jumlah anak 0, redirect dengan pesan khusus
+            header("Location: ../list-anak.php");
+            exit();
         }
     }
 }
@@ -31,8 +52,8 @@ if (isset($_POST['submit'])) {
 // Get all pegawai data for dropdown
 $queryAllPegawai = "SELECT p.idPegawai, p.namaDenganGelar, p.nip 
                     FROM pegawai p
-                    LEFT JOIN alamat a ON p.idPegawai = a.idPegawai
-                    WHERE a.idPegawai IS NULL
+                    LEFT JOIN anak an ON p.idPegawai = an.idPegawai
+                    WHERE an.idPegawai IS NULL
                     ORDER BY p.namaDenganGelar ASC";
 $resultAllPegawai = mysqli_query($conn, $queryAllPegawai);
 
@@ -66,10 +87,10 @@ include '../../../includes/sidebar.php';
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
-            <h2><i class="fas fa-map-marked-alt me-2"></i>Tambah Data Alamat</h2>
-            <p>Formulir Penambahan Data Alamat Pegawai - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
+            <h2><i class="fas fa-users me-2"></i>Tambah Data Keluarga (Anak)</h2>
+            <p>Formulir Penambahan Data Anak Pegawai - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
         </div>
-        <i class="fas fa-map-marked-alt page-header-icon d-none d-md-block"></i>
+        <i class="fas fa-users page-header-icon d-none d-md-block"></i>
     </div>
 
     <!-- Alert Error -->
@@ -107,7 +128,7 @@ include '../../../includes/sidebar.php';
 
     <!-- Form Card -->
     <div class="form-card">
-        <form method="POST" action="" id="formAlamat">
+        <form method="POST" action="" id="formKeluarga">
             
             <!-- Section 0: Pilih Pegawai -->
             <div class="form-section">
@@ -156,7 +177,7 @@ include '../../../includes/sidebar.php';
                                 </select>
                             </div>
                             <?php endif; ?>
-                            <small class="form-text">Pilih pegawai untuk menambahkan data identitas</small>
+                            <small class="form-text">Pilih pegawai untuk menambahkan data anak</small>
                         </div>
                     </div>
                     
@@ -178,72 +199,47 @@ include '../../../includes/sidebar.php';
                 </div>
             </div>
 
-            <!-- Section: Data Alamat -->
+            <!-- Section 1: Data Anak -->
             <div class="form-section">
                 <div class="form-section-header">
-                    <i class="fas fa-map-marked-alt"></i>
-                    <h5>Data Alamat Lengkap</h5>
+                    <i class="fas fa-child"></i>
+                    <h5>Data Anak</h5>
                 </div>
                 <div class="form-section-body">
+                    <div class="alert alert-info-custom mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Catatan:</strong> Jika pegawai tidak memiliki anak, silakan isi jumlah anak dengan 0 (nol).
+                    </div>
+
                     <div class="row">
-                        <div class="col-12 mb-4">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">
-                                Alamat Sesuai KTP <span class="text-danger">*</span>
+                                Jumlah Anak <span class="text-danger">*</span>
                             </label>
-                            <div class="input-group-textarea">
-                                <span class="input-icon-textarea">
-                                    <i class="fas fa-id-card"></i>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-calculator"></i>
                                 </span>
-                                <textarea 
-                                    name="alamatKTP" 
-                                    class="form-control-textarea" 
-                                    rows="4"
-                                    placeholder="Masukkan alamat lengkap sesuai KTP&#10;Contoh: Jl. Merdeka No. 123, RT 01/RW 02, Kelurahan Kampung Jawa, Kecamatan Banda Sakti, Kota Lhokseumawe, Aceh 24352"
-                                    required></textarea>
+                                <input type="number" 
+                                       name="jumlahAnak" 
+                                       id="jumlahAnak" 
+                                       class="form-control" 
+                                       min="0" 
+                                       max="20" 
+                                       value="0"
+                                       placeholder="0"
+                                       required>
                             </div>
                             <small class="form-text">
                                 <i class="fas fa-info-circle me-1"></i>
-                                Tuliskan alamat lengkap sesuai dengan yang tertera di KTP (termasuk RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi, dan Kode Pos)
+                                Masukkan 0 jika tidak memiliki anak
                             </small>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <div class="checkbox-group">
-                                <label class="checkbox-option">
-                                    <input type="checkbox" id="samadenganKTP" onchange="copyAlamat()">
-                                    <span class="checkbox-label">
-                                        <i class="fas fa-copy me-2"></i>
-                                        Alamat Domisili sama dengan Alamat KTP
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <label class="form-label">
-                                Alamat Domisili (Tempat Tinggal Saat Ini) <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group-textarea">
-                                <span class="input-icon-textarea">
-                                    <i class="fas fa-home"></i>
-                                </span>
-                                <textarea 
-                                    name="alamatDomisili" 
-                                    id="alamatDomisili"
-                                    class="form-control-textarea" 
-                                    rows="4"
-                                    placeholder="Masukkan alamat domisili saat ini&#10;Contoh: Jl. Medan-Banda Aceh No. 45, RT 03/RW 04, Desa Muara Dua, Kecamatan Lhokseumawe Utara, Kota Lhokseumawe, Aceh 24356"
-                                    required></textarea>
-                            </div>
-                            <small class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Alamat tempat tinggal saat ini (jika berbeda dengan alamat KTP)
-                            </small>
-                        </div>
+                    <!-- Container untuk input nama anak -->
+                    <div id="containerAnak" class="mt-4">
+                        <!-- Input nama anak akan ditambahkan di sini secara dinamis -->
                     </div>
                 </div>
             </div>
@@ -251,7 +247,7 @@ include '../../../includes/sidebar.php';
             <!-- Form Actions -->
             <div class="form-actions">
                 <button type="submit" name="submit" class="btn-submit">
-                    <i class="fas fa-arrow-right me-2"></i>Selanjutnya
+                    <i class="fas fa-save me-2"></i>Simpan Data
                 </button>
             </div>
         </form>
@@ -276,66 +272,138 @@ function updatePegawaiInfo(selectElement) {
     }
 }
 
-// Copy alamat KTP ke alamat Domisili
-function copyAlamat() {
-    const checkbox = document.getElementById('samadenganKTP');
-    const alamatKTP = document.querySelector('textarea[name="alamatKTP"]');
-    const alamatDomisili = document.getElementById('alamatDomisili');
+// Auto scroll to active step
+document.addEventListener('DOMContentLoaded', function() {
+    const progressSteps = document.querySelector('.progress-steps');
+    const activeStep = document.querySelector('.step.active');
     
-    if (checkbox.checked) {
-        alamatDomisili.value = alamatKTP.value;
-        alamatDomisili.readOnly = true;
-        alamatDomisili.style.backgroundColor = '#f3f4f6';
-    } else {
-        alamatDomisili.value = '';
-        alamatDomisili.readOnly = false;
-        alamatDomisili.style.backgroundColor = 'white';
+    if (progressSteps && activeStep) {
+        const scrollLeft = activeStep.offsetLeft - (progressSteps.offsetWidth / 2) + (activeStep.offsetWidth / 2);
+        progressSteps.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+        });
     }
-}
-
-// Update alamat domisili saat alamat KTP berubah (jika checkbox dicentang)
-document.querySelector('textarea[name="alamatKTP"]').addEventListener('input', function() {
-    const checkbox = document.getElementById('samadenganKTP');
-    if (checkbox.checked) {
-        document.getElementById('alamatDomisili').value = this.value;
+    
+    if (progressSteps) {
+        progressSteps.addEventListener('scroll', function() {
+            const isScrolledToEnd = this.scrollLeft + this.clientWidth >= this.scrollWidth - 10;
+            if (isScrolledToEnd) {
+                this.classList.add('scrolled-end');
+            } else {
+                this.classList.remove('scrolled-end');
+            }
+        });
     }
 });
 
-// Form validation
-document.getElementById('formAlamat').addEventListener('submit', function(e) {
-    const requiredFields = this.querySelectorAll('[required]');
-    let isValid = true;
-    
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            isValid = false;
-            field.classList.add('is-invalid');
+// Dynamic Anak Fields
+const jumlahAnakInput = document.getElementById('jumlahAnak');
+const containerAnak = document.getElementById('containerAnak');
+
+if (jumlahAnakInput && containerAnak) {
+    jumlahAnakInput.addEventListener('input', function() {
+        const jumlah = parseInt(this.value) || 0;
+        containerAnak.innerHTML = '';
+        
+        if (jumlah > 0) {
+            const heading = document.createElement('div');
+            heading.className = 'anak-header mb-3';
+            heading.innerHTML = `
+                <div class="alert alert-success" style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); border-left: 4px solid #0891b2; color: #0c4a6e;">
+                    <i class="fas fa-child me-2"></i>
+                    <strong>Silakan isi nama-nama anak (${jumlah} anak)</strong>
+                </div>
+            `;
+            containerAnak.appendChild(heading);
+            
+            const anakGrid = document.createElement('div');
+            anakGrid.className = 'row';
+            
+            for (let i = 1; i <= jumlah; i++) {
+                const divAnak = document.createElement('div');
+                divAnak.className = 'col-md-6 mb-3';
+                divAnak.innerHTML = `
+                    <label class="form-label">
+                        <i class="fas fa-baby me-1 text-primary"></i>
+                        Nama Anak ke-${i} <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <i class="fas fa-child"></i>
+                        </span>
+                        <input type="text" 
+                               name="namaAnak${i}" 
+                               class="form-control anak-input" 
+                               placeholder="Masukkan nama lengkap anak ke-${i}" 
+                               required>
+                    </div>
+                `;
+                anakGrid.appendChild(divAnak);
+            }
+            
+            containerAnak.appendChild(anakGrid);
         } else {
-            field.classList.remove('is-invalid');
+            // Jika jumlah anak 0, tampilkan pesan
+            containerAnak.innerHTML = `
+                <div class="alert alert-warning" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; color: #78350f;">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Informasi:</strong> Pegawai tidak memiliki anak. Silakan klik "Simpan Data" untuk melanjutkan.
+                </div>
+            `;
         }
     });
     
-    if (!isValid) {
-        e.preventDefault();
-        alert('Mohon lengkapi semua field yang wajib diisi!');
+    // Trigger initial
+    jumlahAnakInput.dispatchEvent(new Event('input'));
+}
+
+// Form validation
+document.getElementById('formKeluarga').addEventListener('submit', function(e) {
+    const jumlahAnak = parseInt(document.getElementById('jumlahAnak').value) || 0;
+    
+    if (jumlahAnak > 0) {
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+        let errorMessages = [];
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('is-invalid');
+                
+                // Get field label
+                const label = field.closest('.mb-3')?.querySelector('.form-label')?.textContent.trim() || 'Field';
+                errorMessages.push(label);
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Mohon lengkapi semua field yang wajib diisi:\n- ' + errorMessages.join('\n- '));
+        }
+    } else {
+        // Jika jumlah anak 0, pastikan user konfirmasi
+        const konfirmasi = confirm('Anda akan menyimpan data tanpa anak. Apakah Anda yakin?');
+        if (!konfirmasi) {
+            e.preventDefault();
+        }
     }
 });
 
 // Remove invalid class on input
-document.querySelectorAll('.form-control-textarea').forEach(input => {
-    input.addEventListener('input', function() {
-        this.classList.remove('is-invalid');
-    });
+document.addEventListener('input', function(e) {
+    if (e.target.classList.contains('form-control')) {
+        e.target.classList.remove('is-invalid');
+    }
 });
 
-document.querySelectorAll('.form-control').forEach(input => {
-    input.addEventListener('input', function() {
-        this.classList.remove('is-invalid');
-    });
-    
-    input.addEventListener('change', function() {
-        this.classList.remove('is-invalid');
-    });
+document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('form-control')) {
+        e.target.classList.remove('is-invalid');
+    }
 });
 </script>
 

@@ -1,26 +1,32 @@
 <?php
 require_once '../../../config/database.php';
 
-$page_title = 'Tambah Data Alamat';
+$page_title = 'Tambah Data Rekening';
 
 // Get ID Pegawai dari parameter URL atau POST
 $idPegawai = isset($_GET['idPegawai']) ? $_GET['idPegawai'] : (isset($_POST['idPegawai']) ? $_POST['idPegawai'] : '');
 
 if (isset($_POST['submit'])) {
     $idPegawai = mysqli_real_escape_string($conn, $_POST['idPegawai'] ?? '');
-    $alamatKTP = mysqli_real_escape_string($conn, $_POST['alamatKTP'] ?? '');
-    $alamatDomisili = mysqli_real_escape_string($conn, $_POST['alamatDomisili'] ?? '');
+    $nomorRekGaji = mysqli_real_escape_string($conn, $_POST['nomorRekGaji'] ?? '');
+    $namaBank = mysqli_real_escape_string($conn, $_POST['namaBank'] ?? '');
+    $kantorCabang = mysqli_real_escape_string($conn, $_POST['kantorCabang'] ?? '');
+    
+    // Handle bank lainnya
+    if ($namaBank === 'Lainnya') {
+        $namaBank = mysqli_real_escape_string($conn, $_POST['namaBankLainnya'] ?? '');
+    }
 
     if ($idPegawai === '') {
         $error = "ID Pegawai kosong. Pastikan alur tambah pegawai benar.";
     } else {
-        $query = "INSERT INTO alamat
-            (idPegawai, alamatKTP, alamatDomisili)
+        $query = "INSERT INTO rekening
+            (idPegawai, nomorRekGaji, namaBank, kantorCabang)
             VALUES
-            ('$idPegawai', '$alamatKTP', '$alamatDomisili')";
+            ('$idPegawai', '$nomorRekGaji', '$namaBank', '$kantorCabang')";
 
         if (mysqli_query($conn, $query)) {
-            header("Location: ../list-alamat.php");
+            header("Location: ../list-rekening.php");
             exit();
         } else {
             $error = "Gagal menambahkan data: " . mysqli_error($conn);
@@ -31,8 +37,8 @@ if (isset($_POST['submit'])) {
 // Get all pegawai data for dropdown
 $queryAllPegawai = "SELECT p.idPegawai, p.namaDenganGelar, p.nip 
                     FROM pegawai p
-                    LEFT JOIN alamat a ON p.idPegawai = a.idPegawai
-                    WHERE a.idPegawai IS NULL
+                    LEFT JOIN rekening rk ON p.idPegawai = rk.idPegawai
+                    WHERE rk.idPegawai IS NULL
                     ORDER BY p.namaDenganGelar ASC";
 $resultAllPegawai = mysqli_query($conn, $queryAllPegawai);
 
@@ -66,10 +72,10 @@ include '../../../includes/sidebar.php';
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
-            <h2><i class="fas fa-map-marked-alt me-2"></i>Tambah Data Alamat</h2>
-            <p>Formulir Penambahan Data Alamat Pegawai - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
+            <h2><i class="fas fa-university me-2"></i>Tambah Data Rekening</h2>
+            <p>Formulir Penambahan Data Rekening Bank - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
         </div>
-        <i class="fas fa-map-marked-alt page-header-icon d-none d-md-block"></i>
+        <i class="fas fa-university page-header-icon d-none d-md-block"></i>
     </div>
 
     <!-- Alert Error -->
@@ -107,7 +113,7 @@ include '../../../includes/sidebar.php';
 
     <!-- Form Card -->
     <div class="form-card">
-        <form method="POST" action="" id="formAlamat">
+        <form method="POST" action="" id="formRekening">
             
             <!-- Section 0: Pilih Pegawai -->
             <div class="form-section">
@@ -156,7 +162,7 @@ include '../../../includes/sidebar.php';
                                 </select>
                             </div>
                             <?php endif; ?>
-                            <small class="form-text">Pilih pegawai untuk menambahkan data identitas</small>
+                            <small class="form-text">Pilih pegawai untuk menambahkan data rekening</small>
                         </div>
                     </div>
                     
@@ -178,70 +184,108 @@ include '../../../includes/sidebar.php';
                 </div>
             </div>
 
-            <!-- Section: Data Alamat -->
+            <!-- Section: Data Rekening Bank -->
             <div class="form-section">
                 <div class="form-section-header">
-                    <i class="fas fa-map-marked-alt"></i>
-                    <h5>Data Alamat Lengkap</h5>
+                    <i class="fas fa-university"></i>
+                    <h5>Data Rekening Bank untuk Gaji</h5>
                 </div>
                 <div class="form-section-body">
+                    <div class="alert alert-info-custom mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Informasi:</strong> Pastikan nomor rekening yang Anda masukkan adalah rekening aktif atas nama Anda sendiri untuk keperluan transfer gaji.
+                    </div>
+
                     <div class="row">
-                        <div class="col-12 mb-4">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">
-                                Alamat Sesuai KTP <span class="text-danger">*</span>
+                                Nama Bank <span class="text-danger">*</span>
                             </label>
-                            <div class="input-group-textarea">
-                                <span class="input-icon-textarea">
-                                    <i class="fas fa-id-card"></i>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-landmark"></i>
                                 </span>
-                                <textarea 
-                                    name="alamatKTP" 
-                                    class="form-control-textarea" 
-                                    rows="4"
-                                    placeholder="Masukkan alamat lengkap sesuai KTP&#10;Contoh: Jl. Merdeka No. 123, RT 01/RW 02, Kelurahan Kampung Jawa, Kecamatan Banda Sakti, Kota Lhokseumawe, Aceh 24352"
-                                    required></textarea>
+                                <select name="namaBank" class="form-control" id="namaBank" required>
+                                    <option value="" disabled selected>Pilih Bank</option>
+                                    <option value="Bank Mandiri">Bank Mandiri</option>
+                                    <option value="Bank BRI">Bank BRI</option>
+                                    <option value="Bank BNI">Bank BNI</option>
+                                    <option value="Bank BTN">Bank BTN</option>
+                                    <option value="Bank Syariah Indonesia (BSI)">Bank Syariah Indonesia (BSI)</option>
+                                    <option value="Bank Aceh">Bank Aceh</option>
+                                    <option value="Bank Aceh Syariah">Bank Aceh Syariah</option>
+                                    <option value="Bank CIMB Niaga">Bank CIMB Niaga</option>
+                                    <option value="Bank Danamon">Bank Danamon</option>
+                                    <option value="Bank Permata">Bank Permata</option>
+                                    <option value="Bank Mega">Bank Mega</option>
+                                    <option value="Bank BCA">Bank BCA</option>
+                                    <option value="Bank Panin">Bank Panin</option>
+                                    <option value="Bank OCBC NISP">Bank OCBC NISP</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
                             </div>
                             <small class="form-text">
                                 <i class="fas fa-info-circle me-1"></i>
-                                Tuliskan alamat lengkap sesuai dengan yang tertera di KTP (termasuk RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi, dan Kode Pos)
+                                Pilih nama bank tempat rekening gaji Anda
                             </small>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <div class="checkbox-group">
-                                <label class="checkbox-option">
-                                    <input type="checkbox" id="samadenganKTP" onchange="copyAlamat()">
-                                    <span class="checkbox-label">
-                                        <i class="fas fa-copy me-2"></i>
-                                        Alamat Domisili sama dengan Alamat KTP
-                                    </span>
-                                </label>
+                        <div class="col-md-6 mb-3" id="bankLainnyaContainer" style="display: none;">
+                            <label class="form-label">
+                                Nama Bank Lainnya <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-landmark"></i>
+                                </span>
+                                <input type="text" 
+                                       name="namaBankLainnya" 
+                                       id="namaBankLainnya"
+                                       class="form-control" 
+                                       placeholder="Masukkan nama bank">
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-12 mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">
-                                Alamat Domisili (Tempat Tinggal Saat Ini) <span class="text-danger">*</span>
+                                Nomor Rekening Gaji <span class="text-danger">*</span>
                             </label>
-                            <div class="input-group-textarea">
-                                <span class="input-icon-textarea">
-                                    <i class="fas fa-home"></i>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-credit-card"></i>
                                 </span>
-                                <textarea 
-                                    name="alamatDomisili" 
-                                    id="alamatDomisili"
-                                    class="form-control-textarea" 
-                                    rows="4"
-                                    placeholder="Masukkan alamat domisili saat ini&#10;Contoh: Jl. Medan-Banda Aceh No. 45, RT 03/RW 04, Desa Muara Dua, Kecamatan Lhokseumawe Utara, Kota Lhokseumawe, Aceh 24356"
-                                    required></textarea>
+                                <input type="text" 
+                                       name="nomorRekGaji" 
+                                       class="form-control" 
+                                       placeholder="Masukkan nomor rekening"
+                                       pattern="[0-9]+"
+                                       required>
                             </div>
                             <small class="form-text">
                                 <i class="fas fa-info-circle me-1"></i>
-                                Alamat tempat tinggal saat ini (jika berbeda dengan alamat KTP)
+                                Nomor rekening hanya berisi angka tanpa spasi atau tanda baca
+                            </small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Kantor Cabang <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-building"></i>
+                                </span>
+                                <input type="text" 
+                                       name="kantorCabang" 
+                                       class="form-control" 
+                                       placeholder="Contoh: KCP Lhokseumawe, Cabang Medan"
+                                       required>
+                            </div>
+                            <small class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Nama kantor cabang bank tempat rekening dibuka
                             </small>
                         </div>
                     </div>
@@ -276,33 +320,28 @@ function updatePegawaiInfo(selectElement) {
     }
 }
 
-// Copy alamat KTP ke alamat Domisili
-function copyAlamat() {
-    const checkbox = document.getElementById('samadenganKTP');
-    const alamatKTP = document.querySelector('textarea[name="alamatKTP"]');
-    const alamatDomisili = document.getElementById('alamatDomisili');
+// Show/Hide Bank Lainnya field
+document.getElementById('namaBank').addEventListener('change', function() {
+    const bankLainnyaContainer = document.getElementById('bankLainnyaContainer');
+    const namaBankLainnya = document.getElementById('namaBankLainnya');
     
-    if (checkbox.checked) {
-        alamatDomisili.value = alamatKTP.value;
-        alamatDomisili.readOnly = true;
-        alamatDomisili.style.backgroundColor = '#f3f4f6';
+    if (this.value === 'Lainnya') {
+        bankLainnyaContainer.style.display = 'block';
+        namaBankLainnya.required = true;
     } else {
-        alamatDomisili.value = '';
-        alamatDomisili.readOnly = false;
-        alamatDomisili.style.backgroundColor = 'white';
-    }
-}
-
-// Update alamat domisili saat alamat KTP berubah (jika checkbox dicentang)
-document.querySelector('textarea[name="alamatKTP"]').addEventListener('input', function() {
-    const checkbox = document.getElementById('samadenganKTP');
-    if (checkbox.checked) {
-        document.getElementById('alamatDomisili').value = this.value;
+        bankLainnyaContainer.style.display = 'none';
+        namaBankLainnya.required = false;
+        namaBankLainnya.value = '';
     }
 });
 
+// Format Nomor Rekening - Only allow numbers
+document.querySelector('input[name="nomorRekGaji"]').addEventListener('input', function(e) {
+    this.value = this.value.replace(/\D/g, ''); // Remove non-digits
+});
+
 // Form validation
-document.getElementById('formAlamat').addEventListener('submit', function(e) {
+document.getElementById('formRekening').addEventListener('submit', function(e) {
     const requiredFields = this.querySelectorAll('[required]');
     let isValid = true;
     
@@ -315,19 +354,29 @@ document.getElementById('formAlamat').addEventListener('submit', function(e) {
         }
     });
     
+    // Validate nomor rekening length
+    const nomorRek = document.querySelector('input[name="nomorRekGaji"]');
+    if (nomorRek.value.length < 10) {
+        isValid = false;
+        nomorRek.classList.add('is-invalid');
+        alert('Nomor rekening minimal 10 digit!');
+    }
+    
+    // Check if "Lainnya" is selected but not filled
+    const namaBank = document.getElementById('namaBank');
+    const namaBankLainnya = document.getElementById('namaBankLainnya');
+    if (namaBank.value === 'Lainnya' && !namaBankLainnya.value.trim()) {
+        isValid = false;
+        namaBankLainnya.classList.add('is-invalid');
+        alert('Mohon isi nama bank lainnya!');
+    }
+    
     if (!isValid) {
         e.preventDefault();
-        alert('Mohon lengkapi semua field yang wajib diisi!');
     }
 });
 
 // Remove invalid class on input
-document.querySelectorAll('.form-control-textarea').forEach(input => {
-    input.addEventListener('input', function() {
-        this.classList.remove('is-invalid');
-    });
-});
-
 document.querySelectorAll('.form-control').forEach(input => {
     input.addEventListener('input', function() {
         this.classList.remove('is-invalid');

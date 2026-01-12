@@ -21,85 +21,201 @@ $total_pangkat = mysqli_fetch_assoc($result_pangkat)['total'];
 include '../includes/sidebar.php';
 ?>
 
-<!-- Dashboard Content -->
-<div class="row mb-4">
-    <!-- Welcome Card -->
-    <div class="col-12 mb-4">
-        
-    </div>
-</div>
+<style>
+/* Dashboard Background Styles */
+body {
+    background-image: url('../assets/bg-kedua.webp');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    position: relative;
+}
 
-<!-- Statistics Cards -->
-<div class="row mb-4">
-    <!-- Total Pegawai -->
-    <div class="col-md-6 col-lg-3 mb-4">
-        <div class="card border-0 shadow-sm h-100 card-hover">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="bg-primary bg-opacity-10 p-3 rounded">
-                        <i class="fas fa-users fa-2x text-primary"></i>
+/* Overlay biru semi-transparent */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(198, 232, 255, 0.7);
+    z-index: -1;
+}
+
+.dashboard-container {
+    padding: 3rem 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header Title */
+.dashboard-title {
+    text-align: center;
+    color: #000;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 3rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Card Statistics - Simple White */
+.stat-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 1rem 1rem;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    height: 100%;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Icon Container */
+.stat-icon {
+    width: 120px;
+    height: 100px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon i {
+    font-size: 80px;
+    color: #000;
+}
+
+/* Title */
+.stat-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0088cc;
+    margin-bottom: 0.5rem;
+}
+
+/* Subtitle */
+.stat-subtitle {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0;
+}
+
+/* Information Section */
+.info-section {
+    background: rgba(100, 160, 200, 0.9);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-top: 3rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.info-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.info-text {
+    font-size: 1rem;
+    color: #fff;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        min-height: 250px;
+        padding: 2rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stat-icon {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .stat-icon i {
+        font-size: 60px;
+    }
+    
+    .stat-title {
+        font-size: 1.3rem;
+    }
+    
+    .dashboard-container {
+        padding: 2rem 1rem;
+    }
+    
+    body {
+        background-attachment: scroll;
+    }
+}
+</style>
+
+<div class="dashboard-container">
+    <!-- Main Title -->
+    <h1 class="dashboard-title">SISTEM MANAJEMEN DATA KEPEGAWAIAN</h1>
+
+    <!-- Statistics Cards -->
+    <div class="row justify-content-center">
+        <!-- Total Pegawai -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2 class="stat-number"><?php echo number_format($total_pegawai); ?></h2>
+                <h3 class="stat-title">Total Pegawai</h3>
+                <p class="stat-subtitle">Total Pegawai Kantor</p>
+            </div>
+        </div>
+
+        <!-- Data Pegawai -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <a href="pegawai/list-pegawai.php" class="card-link">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-cog"></i>
                     </div>
-                    <span class="badge bg-success">
-                        <i class="fas fa-arrow-up me-1"></i>100%
-                    </span>
+                    <h3 class="stat-title">Data Pegawai</h3>
+                    <p class="stat-subtitle">Kelola data Pegawai</p>
                 </div>
-                <h6 class="text-muted mb-2">Total Pegawai</h6>
-                <h2 class="fw-bold mb-0"><?php echo number_format($total_pegawai); ?></h2>
-                <small class="text-muted">Pegawai terdaftar</small>
-            </div>
+            </a>
         </div>
     </div>
 
-    <!-- Quick Action -->
-    <div class="col-md-6 col-lg-3 mb-4">
-        <div class="card border-0 shadow-sm h-100 card-hover" style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);">
-            <div class="card-body text-white d-flex flex-column justify-content-center">
-                <div class="text-center">
-                    <i class="fas fa-user-plus fa-3x mb-3 opacity-75"></i>
-                    <h6 class="mb-3">Tambah Pegawai Baru</h6>
-                    <a href="pegawai/tambah-pegawai.php" class="btn btn-light btn-sm">
-                        <i class="fas fa-plus me-2"></i>Tambah Sekarang
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Information Section -->
-<div class="row">
-    <div class="col-lg-8 mb-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h5 class="fw-bold mb-3">
-                    <i class="fas fa-info-circle text-primary me-2"></i>Tentang Si-Gawai
-                </h5>
-                <p class="text-muted mb-3">
-                    Sistem Informasi Kepegawaian (Si-Gawai) adalah platform digital untuk mengelola 
-                    seluruh data pegawai di Kantor Imigrasi Kelas II TPI Lhokseumawe secara terpadu 
-                    dan terstruktur. Sistem ini digunakan untuk mengelola data karyawan di Kantor Imigrasi Kelas II TPI Lhokseumawe. Anda dapat melihat, menambah, mengubah dan menghapus data karyawan melalui menu yang tersedia.
+    <!-- Information Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="info-section">
+                <h2 class="info-title">Informasi Sistem</h2>
+                <p class="info-text">
+                    Sistem ini digunakan untuk mengelola data pegawai di Kantor Imigrasi Kelas II TPI Lhokseumawe. 
+                    Anda dapat melihat, menambah, mengubah dan menghapus data pegawai melalui menu yang tersedia.
                 </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-4 mb-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h5 class="fw-bold mb-3">
-                    <i class="fas fa-headset text-info me-2"></i>Bantuan
-                </h5>
-                <p class="text-muted small mb-3">
-                    Butuh bantuan? Hubungi administrator sistem.
-                </p>
-                <div class="d-grid gap-2">
-                    <button class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-book me-2"></i>Panduan Penggunaan
-                    </button>
-                    <button class="btn btn-outline-success btn-sm">
-                        <i class="fas fa-phone me-2"></i>Hubungi Admin
-                    </button>
-                </div>
             </div>
         </div>
     </div>

@@ -1,26 +1,25 @@
 <?php
 require_once '../../../config/database.php';
 
-$page_title = 'Tambah Data Alamat';
+$page_title = 'Tambah Data Pendidikan';
 
 // Get ID Pegawai dari parameter URL atau POST
 $idPegawai = isset($_GET['idPegawai']) ? $_GET['idPegawai'] : (isset($_POST['idPegawai']) ? $_POST['idPegawai'] : '');
 
 if (isset($_POST['submit'])) {
     $idPegawai = mysqli_real_escape_string($conn, $_POST['idPegawai'] ?? '');
-    $alamatKTP = mysqli_real_escape_string($conn, $_POST['alamatKTP'] ?? '');
-    $alamatDomisili = mysqli_real_escape_string($conn, $_POST['alamatDomisili'] ?? '');
+    $pendidikanTerakhir = mysqli_real_escape_string($conn, $_POST['pendidikanTerakhir'] ?? '');
 
     if ($idPegawai === '') {
         $error = "ID Pegawai kosong. Pastikan alur tambah pegawai benar.";
     } else {
-        $query = "INSERT INTO alamat
-            (idPegawai, alamatKTP, alamatDomisili)
+        $query = "INSERT INTO pendidikan
+            (idPegawai, pendidikanTerakhir)
             VALUES
-            ('$idPegawai', '$alamatKTP', '$alamatDomisili')";
+            ('$idPegawai', '$pendidikanTerakhir')";
 
         if (mysqli_query($conn, $query)) {
-            header("Location: ../list-alamat.php");
+            header("Location: ../list-pendidikan.php");
             exit();
         } else {
             $error = "Gagal menambahkan data: " . mysqli_error($conn);
@@ -31,8 +30,8 @@ if (isset($_POST['submit'])) {
 // Get all pegawai data for dropdown
 $queryAllPegawai = "SELECT p.idPegawai, p.namaDenganGelar, p.nip 
                     FROM pegawai p
-                    LEFT JOIN alamat a ON p.idPegawai = a.idPegawai
-                    WHERE a.idPegawai IS NULL
+                    LEFT JOIN pendidikan pk ON p.idPegawai = pk.idPegawai
+                    WHERE pk.idPegawai IS NULL
                     ORDER BY p.namaDenganGelar ASC";
 $resultAllPegawai = mysqli_query($conn, $queryAllPegawai);
 
@@ -66,10 +65,10 @@ include '../../../includes/sidebar.php';
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
-            <h2><i class="fas fa-map-marked-alt me-2"></i>Tambah Data Alamat</h2>
-            <p>Formulir Penambahan Data Alamat Pegawai - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
+            <h2><i class="fas fa-graduation-cap me-2"></i>Tambah Data Pendidikan</h2>
+            <p>Formulir Penambahan Data Pendidikan Formal - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
         </div>
-        <i class="fas fa-map-marked-alt page-header-icon d-none d-md-block"></i>
+        <i class="fas fa-graduation-cap page-header-icon d-none d-md-block"></i>
     </div>
 
     <!-- Alert Error -->
@@ -107,7 +106,7 @@ include '../../../includes/sidebar.php';
 
     <!-- Form Card -->
     <div class="form-card">
-        <form method="POST" action="" id="formAlamat">
+        <form method="POST" action="" id="formPendidikan">
             
             <!-- Section 0: Pilih Pegawai -->
             <div class="form-section">
@@ -156,7 +155,7 @@ include '../../../includes/sidebar.php';
                                 </select>
                             </div>
                             <?php endif; ?>
-                            <small class="form-text">Pilih pegawai untuk menambahkan data identitas</small>
+                            <small class="form-text">Pilih pegawai untuk menambahkan data pendidikan</small>
                         </div>
                     </div>
                     
@@ -178,70 +177,42 @@ include '../../../includes/sidebar.php';
                 </div>
             </div>
 
-            <!-- Section: Data Alamat -->
+            <!-- Section: Data Pendidikan Formal -->
             <div class="form-section">
                 <div class="form-section-header">
-                    <i class="fas fa-map-marked-alt"></i>
-                    <h5>Data Alamat Lengkap</h5>
+                    <i class="fas fa-graduation-cap"></i>
+                    <h5>Data Pendidikan Formal Terakhir</h5>
                 </div>
                 <div class="form-section-body">
                     <div class="row">
-                        <div class="col-12 mb-4">
+                        <div class="col-md-8 mb-3">
                             <label class="form-label">
-                                Alamat Sesuai KTP <span class="text-danger">*</span>
+                                Jenjang Pendidikan Terakhir <span class="text-danger">*</span>
                             </label>
-                            <div class="input-group-textarea">
-                                <span class="input-icon-textarea">
-                                    <i class="fas fa-id-card"></i>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-user-graduate"></i>
                                 </span>
-                                <textarea 
-                                    name="alamatKTP" 
-                                    class="form-control-textarea" 
-                                    rows="4"
-                                    placeholder="Masukkan alamat lengkap sesuai KTP&#10;Contoh: Jl. Merdeka No. 123, RT 01/RW 02, Kelurahan Kampung Jawa, Kecamatan Banda Sakti, Kota Lhokseumawe, Aceh 24352"
-                                    required></textarea>
+                                <select name="pendidikanTerakhir" class="form-control" required>
+                                    <option value="" disabled selected>Pilih Jenjang Pendidikan</option>
+                                    <option value="SD/Sederajat">SD/Sederajat</option>
+                                    <option value="SMP/Sederajat">SMP/Sederajat</option>
+                                    <option value="SMA/Sederajat">SMA/Sederajat</option>
+                                    <option value="SMK">SMK</option>
+                                    <option value="D1 (Diploma I)">D1 (Diploma I)</option>
+                                    <option value="D2 (Diploma II)">D2 (Diploma II)</option>
+                                    <option value="D3 (Diploma III)">D3 (Diploma III)</option>
+                                    <option value="D4 (Diploma IV)">D4 (Diploma IV)</option>
+                                    <option value="S1 (Sarjana)">S1 (Sarjana)</option>
+                                    <option value="S2 (Magister)">S2 (Magister)</option>
+                                    <option value="S3 (Doktor)">S3 (Doktor)</option>
+                                    <option value="Profesi">Profesi</option>
+                                    <option value="Spesialis">Spesialis</option>
+                                </select>
                             </div>
                             <small class="form-text">
                                 <i class="fas fa-info-circle me-1"></i>
-                                Tuliskan alamat lengkap sesuai dengan yang tertera di KTP (termasuk RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi, dan Kode Pos)
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <div class="checkbox-group">
-                                <label class="checkbox-option">
-                                    <input type="checkbox" id="samadenganKTP" onchange="copyAlamat()">
-                                    <span class="checkbox-label">
-                                        <i class="fas fa-copy me-2"></i>
-                                        Alamat Domisili sama dengan Alamat KTP
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <label class="form-label">
-                                Alamat Domisili (Tempat Tinggal Saat Ini) <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group-textarea">
-                                <span class="input-icon-textarea">
-                                    <i class="fas fa-home"></i>
-                                </span>
-                                <textarea 
-                                    name="alamatDomisili" 
-                                    id="alamatDomisili"
-                                    class="form-control-textarea" 
-                                    rows="4"
-                                    placeholder="Masukkan alamat domisili saat ini&#10;Contoh: Jl. Medan-Banda Aceh No. 45, RT 03/RW 04, Desa Muara Dua, Kecamatan Lhokseumawe Utara, Kota Lhokseumawe, Aceh 24356"
-                                    required></textarea>
-                            </div>
-                            <small class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Alamat tempat tinggal saat ini (jika berbeda dengan alamat KTP)
+                                Pilih jenjang pendidikan tertinggi yang telah diselesaikan
                             </small>
                         </div>
                     </div>
@@ -276,33 +247,31 @@ function updatePegawaiInfo(selectElement) {
     }
 }
 
-// Copy alamat KTP ke alamat Domisili
-function copyAlamat() {
-    const checkbox = document.getElementById('samadenganKTP');
-    const alamatKTP = document.querySelector('textarea[name="alamatKTP"]');
-    const alamatDomisili = document.getElementById('alamatDomisili');
+// Auto scroll to active step
+document.addEventListener('DOMContentLoaded', function() {
+    const progressSteps = document.querySelector('.progress-steps');
+    const activeStep = document.querySelector('.step.active');
     
-    if (checkbox.checked) {
-        alamatDomisili.value = alamatKTP.value;
-        alamatDomisili.readOnly = true;
-        alamatDomisili.style.backgroundColor = '#f3f4f6';
-    } else {
-        alamatDomisili.value = '';
-        alamatDomisili.readOnly = false;
-        alamatDomisili.style.backgroundColor = 'white';
+    if (progressSteps && activeStep) {
+        const scrollLeft = activeStep.offsetLeft - (progressSteps.offsetWidth / 2) + (activeStep.offsetWidth / 2);
+        progressSteps.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+        });
     }
-}
-
-// Update alamat domisili saat alamat KTP berubah (jika checkbox dicentang)
-document.querySelector('textarea[name="alamatKTP"]').addEventListener('input', function() {
-    const checkbox = document.getElementById('samadenganKTP');
-    if (checkbox.checked) {
-        document.getElementById('alamatDomisili').value = this.value;
-    }
+    
+    progressSteps.addEventListener('scroll', function() {
+        const isScrolledToEnd = this.scrollLeft + this.clientWidth >= this.scrollWidth - 10;
+        if (isScrolledToEnd) {
+            this.classList.add('scrolled-end');
+        } else {
+            this.classList.remove('scrolled-end');
+        }
+    });
 });
 
 // Form validation
-document.getElementById('formAlamat').addEventListener('submit', function(e) {
+document.getElementById('formPendidikan').addEventListener('submit', function(e) {
     const requiredFields = this.querySelectorAll('[required]');
     let isValid = true;
     
@@ -321,19 +290,13 @@ document.getElementById('formAlamat').addEventListener('submit', function(e) {
     }
 });
 
-// Remove invalid class on input
-document.querySelectorAll('.form-control-textarea').forEach(input => {
-    input.addEventListener('input', function() {
-        this.classList.remove('is-invalid');
-    });
-});
-
+// Remove invalid class on change
 document.querySelectorAll('.form-control').forEach(input => {
-    input.addEventListener('input', function() {
+    input.addEventListener('change', function() {
         this.classList.remove('is-invalid');
     });
     
-    input.addEventListener('change', function() {
+    input.addEventListener('input', function() {
         this.classList.remove('is-invalid');
     });
 });

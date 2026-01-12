@@ -36,7 +36,7 @@ include '../../includes/sidebar.php';
     </div>
 
     <div class="action-bar">
-        <a href="tambah-fisik.php" class="btn-add">
+        <a href="tambah/tambah-fisik-2.php" class="btn-add">
             <i class="fas fa-plus"></i> Tambah Data
         </a>
     </div>
@@ -87,12 +87,20 @@ include '../../includes/sidebar.php';
                             <td><?php echo $row['bentukWajah']; ?></td>
                             <td><?php echo $row['warnaKulit']; ?></td>
                             <td>
-                                <a href="edit.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm" title="Edit">
+                                <a href="edit/edit-fisik.php?id=<?php echo $row['idFisik']; ?>" 
+                                class="btn btn-warning btn-sm" 
+                                title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="hapus.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" title="Hapus" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                <button type="button" 
+                                        class="btn btn-danger btn-sm" 
+                                        title="Hapus"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteModal"
+                                        data-id="<?php echo $row['idFisik']; ?>"
+                                        data-nama="<?php echo htmlspecialchars($row['namaDenganGelar']); ?>">
                                     <i class="fas fa-trash"></i>
-                                </a>
+                                </button>
                             </td>
                         </tr>
                         <?php endwhile;

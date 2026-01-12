@@ -43,7 +43,7 @@ include '../../includes/sidebar.php';
     </div>
 
     <div class="action-bar">
-        <a href="tambah-kepegawaian.php" class="btn-add">
+        <a href="tambah/tambah-kepegawaian-2.php" class="btn-add">
             <i class="fas fa-plus"></i> Tambah Data
         </a>
     </div>
