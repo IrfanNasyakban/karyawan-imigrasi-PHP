@@ -3,33 +3,33 @@ require_once '../../../config/database.php';
 
 // Cek apakah ada parameter id
 if (isset($_GET['id'])) {
-    $idIdentitas = mysqli_real_escape_string($conn, $_GET['id']);
+    $idPasangan = mysqli_real_escape_string($conn, $_GET['id']);
     
-    // Ambil data identitas untuk validasi
-    $checkQuery = "SELECT idIdentitas FROM identitas WHERE idIdentitas = '$idIdentitas'";
+    // Ambil data Pasangan untuk validasi
+    $checkQuery = "SELECT idPasangan FROM pasangan WHERE idPasangan = '$idPasangan'";
     $checkResult = mysqli_query($conn, $checkQuery);
     
     if (mysqli_num_rows($checkResult) > 0) {
         // Data ditemukan, lakukan penghapusan
-        $deleteQuery = "DELETE FROM identitas WHERE idIdentitas = '$idIdentitas'";
+        $deleteQuery = "DELETE FROM pasangan WHERE idPasangan = '$idPasangan'";
         
         if (mysqli_query($conn, $deleteQuery)) {
             // Berhasil dihapus
-            header("Location: ../list-identitas.php?message=hapus");
+            header("Location: ../list-pasangan.php?message=hapus");
             exit();
         } else {
             // Gagal menghapus
-            header("Location: ../list-identitas.php?error=gagal_hapus");
+            header("Location: ../list-pasangan.php?error=gagal_hapus");
             exit();
         }
     } else {
         // Data tidak ditemukan
-        header("Location: ../list-identitas.php?error=tidak_ditemukan");
+        header("Location: ../list-pasangan.php?error=tidak_ditemukan");
         exit();
     }
 } else {
     // Tidak ada parameter id
-    header("Location: ../list-identitas.php?error=invalid_request");
+    header("Location: ../list-pasangan.php?error=invalid_request");
     exit();
 }
 ?>

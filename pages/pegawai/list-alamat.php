@@ -3,16 +3,34 @@ require_once '../../config/database.php';
 
 $page_title = 'Data Alamat';
 
-// Ambil data alamat
-$query = "SELECT 
-            a.idAlamat,
-            a.idPegawai,
-            p.namaDenganGelar,
-            a.alamatKTP,
-            a.alamatDomisili
-          FROM alamat a
-          LEFT JOIN pegawai p ON a.idPegawai = p.idPegawai
-          ORDER BY a.idAlamat DESC";
+// Ambil keyword search
+$search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
+// Modifikasi query untuk search
+if ($search != '') {
+    $query = "SELECT 
+                a.idAlamat,
+                a.idPegawai,
+                p.namaDenganGelar,
+                a.alamatKTP,
+                a.alamatDomisili
+              FROM alamat a
+              LEFT JOIN pegawai p ON a.idPegawai = p.idPegawai
+              WHERE p.namaDenganGelar LIKE '%$search%'
+              OR a.alamatKTP LIKE '%$search%'
+              OR a.alamatDomisili LIKE '%$search%'
+              ORDER BY a.idAlamat DESC";
+} else {
+    $query = "SELECT 
+                a.idAlamat,
+                a.idPegawai,
+                p.namaDenganGelar,
+                a.alamatKTP,
+                a.alamatDomisili
+              FROM alamat a
+              LEFT JOIN pegawai p ON a.idPegawai = p.idPegawai
+              ORDER BY a.idAlamat DESC";
+}
 
 $result = mysqli_query($conn, $query);
 
@@ -20,6 +38,94 @@ include '../../includes/sidebar.php';
 ?>
 
 <link rel="stylesheet" href="../../assets/css/style-tables.css">
+
+<style>
+/* Search Box Styling */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-input {
+    padding: 10px 40px 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 300px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.search-button {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.search-button:hover {
+    background: #f5f5f5;
+    color: #4CAF50;
+}
+
+.search-reset {
+    position: absolute;
+    right: 45px;
+    background: #ff5252;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.search-reset:hover {
+    background: #ff1744;
+    transform: rotate(90deg);
+    color: white;
+}
+
+.search-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
+}
+
+.search-info i {
+    font-size: 20px;
+}
+
+.search-info strong {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+</style>
 
 <div class="container-fluid px-2 py-2">
     <!-- Page Header -->
@@ -32,10 +138,41 @@ include '../../includes/sidebar.php';
     </div>
 
     <div class="action-bar">
-        <a href="tambah/tambah-alamat-2.php" class="btn-add">
-            <i class="fas fa-plus"></i> Tambah Data
-        </a>
+        <div class="action-bar-left" style="display: flex; gap: 15px; align-items: center;">
+            <a href="tambah/tambah-alamat-2.php" class="btn-add">
+                <i class="fas fa-plus"></i> Tambah Data
+            </a>
+            <form method="GET" action="" class="search-form" style="margin: 0;">
+                <div class="search-box">
+                    <input type="text" 
+                           name="search" 
+                           class="search-input" 
+                           placeholder="Cari nama pegawai atau alamat..." 
+                           value="<?php echo htmlspecialchars($search); ?>"
+                           autocomplete="off">
+                    <?php if ($search != ''): ?>
+                        <a href="?" class="search-reset" title="Reset pencarian">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    <?php endif; ?>
+                    <button type="submit" class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <!-- Search Result Info -->
+    <?php if ($search != ''): ?>
+        <div class="search-info">
+            <i class="fas fa-filter"></i>
+            <span>Hasil pencarian untuk: <strong>"<?php echo htmlspecialchars($search); ?>"</strong></span>
+            <span style="margin-left: auto; background: rgba(255,255,255,0.3); padding: 4px 12px; border-radius: 20px;">
+                <?php echo mysqli_num_rows($result); ?> data ditemukan
+            </span>
+        </div>
+    <?php endif; ?>
 
     <!-- Table -->
     <div class="card-body">
