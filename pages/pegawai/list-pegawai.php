@@ -205,7 +205,7 @@ include '../../includes/sidebar.php';
                         <td><?php echo htmlspecialchars($row['noHp']); ?></td>
                         <td><?php echo htmlspecialchars($row['hobi']); ?></td>
                         <td>
-                            <a href="detail-pegawai.php?id=<?php echo $row['idPegawai']; ?>" 
+                            <a href="view/view-pegawai.php?id=<?php echo $row['idPegawai']; ?>" 
                                class="btn btn-info btn-sm" 
                                title="Detail">
                                 <i class="fas fa-eye"></i>

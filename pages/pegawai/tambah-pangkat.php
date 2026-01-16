@@ -14,6 +14,10 @@ if (isset($_POST['submit'])) {
     $pangkat = mysqli_real_escape_string($conn, $_POST['pangkat'] ?? '');
     $golonganRuang = mysqli_real_escape_string($conn, $_POST['golonganRuang'] ?? '');
     $tmtPangkat = mysqli_real_escape_string($conn, $_POST['tmtPangkat'] ?? '');
+    $tanggalSKPangkat = mysqli_real_escape_string($conn, $_POST['tanggalSKPangkat'] ?? '');
+    $nomorSKPangkat = mysqli_real_escape_string($conn, $_POST['nomorSKPangkat'] ?? '');
+    $SKPangkatDari = mysqli_real_escape_string($conn, $_POST['SKPangkatDari'] ?? '');
+    $uraianSKPangkat = mysqli_real_escape_string($conn, $_POST['uraianSKPangkat'] ?? '');
 
     if ($idPegawai === '') {
         $error = "ID Pegawai kosong. Pastikan alur tambah pegawai benar.";
@@ -221,6 +225,86 @@ include '../../includes/sidebar.php';
                 </div>
             </div>
 
+            <!-- Section: Surat Keputusan Pangkat -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <i class="fas fa-file-contract"></i>
+                    <h5>Surat Keputusan Pangkat</h5>
+                </div>
+                <div class="form-section-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Tanggal SK Pangkat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </span>
+                                <input type="date" 
+                                       name="tanggalSKPangkat" 
+                                       class="form-control" 
+                                       required>
+                            </div>
+                            <small class="form-text">Tanggal diterbitkannya SK Pangkat</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Nomor SK Pangkat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-hashtag"></i>
+                                </span>
+                                <input type="text" 
+                                       name="nomorSKPangkat" 
+                                       class="form-control" 
+                                       placeholder="Contoh: 001/SK/2024"
+                                       required>
+                            </div>
+                            <small class="form-text">Nomor surat keputusan pangkat</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                SK Pangkat Dari <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-building"></i>
+                                </span>
+                                <input type="text" 
+                                       name="SKPangkatDari" 
+                                       class="form-control" 
+                                       placeholder="Contoh: Kepala Kanwil Kemenkumham Aceh"
+                                       required>
+                            </div>
+                            <small class="form-text">Instansi/Pejabat yang menerbitkan SK</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Uraian SK Pangkat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-align-left"></i>
+                                </span>
+                                <textarea name="uraianSKPangkat" 
+                                          class="form-control" 
+                                          rows="3"
+                                          placeholder="Contoh: Kenaikan Pangkat Periode Oktober 2024"
+                                          required></textarea>
+                            </div>
+                            <small class="form-text">Deskripsi atau keterangan SK Pangkat</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Form Actions -->
             <div class="form-actions">
                 <a href="tambah-pegawai.php" class="btn-cancel">
@@ -261,6 +345,21 @@ document.querySelectorAll('.form-control').forEach(input => {
         this.classList.remove('is-invalid');
     });
 });
+
+// Update pegawai info preview
+function updatePegawaiInfo(select) {
+    const selectedOption = select.options[select.selectedIndex];
+    const nama = selectedOption.getAttribute('data-nama');
+    const nip = selectedOption.getAttribute('data-nip');
+    
+    if (nama && nip) {
+        document.getElementById('previewNama').textContent = nama;
+        document.getElementById('previewNip').textContent = nip;
+        document.getElementById('pegawaiInfoPreview').style.display = 'block';
+    } else {
+        document.getElementById('pegawaiInfoPreview').style.display = 'none';
+    }
+}
 </script>
 
 <?php include '../../includes/footer.php'; ?>

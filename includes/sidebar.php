@@ -7,6 +7,9 @@ $logo_path = str_repeat('../', $depth - 1) . 'assets/logo_sigawai.png';
 if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/tambah/') !== false) {
         $logo_path = '../../../assets/logo_sigawai.png';
     } 
+    else if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/view/') !== false) {
+        $logo_path = '../../../assets/logo_sigawai.png';
+    }
     else if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
         $logo_path = '../../assets/logo_sigawai.png';
     }
