@@ -1,63 +1,55 @@
 <?php
 require_once '../../../config/database.php';
 
-$page_title = 'Tambah Data Fisik';
+$page_title = 'Edit Data Fisik';
 
-// Get ID Pegawai dari parameter URL atau POST
-$idPegawai = isset($_GET['idPegawai']) ? $_GET['idPegawai'] : (isset($_POST['idPegawai']) ? $_POST['idPegawai'] : '');
-
-if (isset($_POST['submit'])) {
-    $idPegawai = mysqli_real_escape_string($conn, $_POST['idPegawai'] ?? '');
-    $tinggiBadan = mysqli_real_escape_string($conn, $_POST['tinggiBadan'] ?? '');
-    $beratBadan = mysqli_real_escape_string($conn, $_POST['beratBadan'] ?? '');
-    $jenisRambut = mysqli_real_escape_string($conn, $_POST['jenisRambut'] ?? '');
-    $warnaRambut = mysqli_real_escape_string($conn, $_POST['warnaRambut'] ?? '');
-    $bentukWajah = mysqli_real_escape_string($conn, $_POST['bentukWajah'] ?? '');
-    $warnaKulit = mysqli_real_escape_string($conn, $_POST['warnaKulit'] ?? '');
-    $ciriKhusus = mysqli_real_escape_string($conn, $_POST['ciriKhusus'] ?? '');
-
-    if ($idPegawai === '') {
-        $error = "ID Pegawai kosong.";
-    } else {
-        $query = "INSERT INTO fisik
-            (idPegawai, tinggiBadan, beratBadan, jenisRambut, warnaRambut, bentukWajah, warnaKulit, ciriKhusus)
-            VALUES
-            ('$idPegawai', '$tinggiBadan', '$beratBadan', '$jenisRambut', '$warnaRambut', '$bentukWajah', '$warnaKulit', '$ciriKhusus')";
-
-        if (mysqli_query($conn, $query)) {
-            header("Location: ../list-fisik.php");
-            exit();
-        } else {
-            $error = "Gagal menambahkan data: " . mysqli_error($conn);
-        }
-    }
+// Cek apakah ada ID yang dikirim
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    header("Location: ../list-fisik.php?error=invalid_request");
+    exit();
 }
 
-// Get all pegawai data for dropdown
-$queryAllPegawai = "SELECT p.idPegawai, p.namaDenganGelar, p.nip 
-                    FROM pegawai p
-                    LEFT JOIN fisik fs ON p.idPegawai = fs.idPegawai
-                    WHERE fs.idPegawai IS NULL
-                    ORDER BY p.namaDenganGelar ASC";
-$resultAllPegawai = mysqli_query($conn, $queryAllPegawai);
+$idFisik = mysqli_real_escape_string($conn, $_GET['id']);
 
-// Cek apakah ada pegawai yang tersedia
-$countAvailable = mysqli_num_rows($resultAllPegawai);
+// Ambil data Fisik dan pegawai berdasarkan ID
+$query = "SELECT f.*, p.nip, p.namaDenganGelar, p.statusPegawai 
+          FROM fisik f
+          LEFT JOIN pegawai p ON f.idPegawai = p.idPegawai
+          WHERE f.idFisik = '$idFisik'";
+$result = mysqli_query($conn, $query);
 
-// Get selected pegawai data
-$namaDenganGelar = '';
-$nip = '';
-if ($idPegawai !== '') {
-    $query = "SELECT namaDenganGelar, nip 
-              FROM pegawai 
-              WHERE idPegawai = '" . mysqli_real_escape_string($conn, $idPegawai) . "'";
+if (mysqli_num_rows($result) == 0) {
+    header("Location: ../list-fisik.php?error=tidak_ditemukan");
+    exit();
+}
+
+$fisik = mysqli_fetch_assoc($result);
+
+// Proses update data
+if (isset($_POST['submit'])) {
+    $tinggiBadan = mysqli_real_escape_string($conn, $_POST['tinggiBadan']);
+    $beratBadan = mysqli_real_escape_string($conn, $_POST['beratBadan']);
+    $jenisRambut = mysqli_real_escape_string($conn, $_POST['jenisRambut']);
+    $warnaRambut = mysqli_real_escape_string($conn, $_POST['warnaRambut']);
+    $bentukWajah = mysqli_real_escape_string($conn, $_POST['bentukWajah']);
+    $warnaKulit = mysqli_real_escape_string($conn, $_POST['warnaKulit']);
+    $ciriKhusus = mysqli_real_escape_string($conn, $_POST['ciriKhusus']);
     
-    $result = mysqli_query($conn, $query);
+    $queryUpdate = "UPDATE fisik SET 
+                    tinggiBadan = '$tinggiBadan',
+                    beratBadan = '$beratBadan',
+                    jenisRambut = '$jenisRambut',
+                    warnaRambut = '$warnaRambut',
+                    bentukWajah = '$bentukWajah',
+                    warnaKulit = '$warnaKulit',
+                    ciriKhusus = '$ciriKhusus'
+                    WHERE idFisik = '$idFisik'";
     
-    if ($result && mysqli_num_rows($result) > 0) {
-        $pegawai = mysqli_fetch_assoc($result);
-        $namaDenganGelar = $pegawai['namaDenganGelar'];
-        $nip = $pegawai['nip'];
+    if (mysqli_query($conn, $queryUpdate)) {
+        header("Location: ../list-fisik.php?message=edit");
+        exit();
+    } else {
+        $error = "Gagal mengupdate data: " . mysqli_error($conn);
     }
 }
 
@@ -71,8 +63,8 @@ include '../../../includes/sidebar.php';
     <!-- Page Header -->
     <div class="page-header">
         <div class="page-header-content">
-            <h2><i class="fas fa-user-md me-2"></i>Tambah Data Fisik</h2>
-            <p>Formulir Penambahan Data Ciri-Ciri Fisik Pegawai - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
+            <h2><i class="fas fa-user-md me-2"></i>Edit Data Fisik</h2>
+            <p>Formulir Edit Data Ciri-Ciri Fisik Pegawai - Kantor Imigrasi Kelas II TPI Lhokseumawe</p>
         </div>
         <i class="fas fa-user-md page-header-icon d-none d-md-block"></i>
     </div>
@@ -86,8 +78,7 @@ include '../../../includes/sidebar.php';
         </div>
     <?php endif; ?>
 
-    <!-- Info Pegawai Card (hanya tampil jika pegawai sudah dipilih) -->
-    <?php if ($idPegawai !== '' && $namaDenganGelar !== ''): ?>
+    <!-- Info Pegawai Card -->
     <div class="info-card mb-4">
         <div class="info-card-header">
             <i class="fas fa-user-circle"></i>
@@ -98,90 +89,20 @@ include '../../../includes/sidebar.php';
                 <div class="info-label">
                     <i class="fas fa-user"></i> Nama Lengkap
                 </div>
-                <div class="info-value"><?php echo htmlspecialchars($namaDenganGelar); ?></div>
+                <div class="info-value"><?php echo htmlspecialchars($fisik['namaDenganGelar']); ?></div>
             </div>
             <div class="info-item">
                 <div class="info-label">
                     <i class="fas fa-id-card"></i> NIP
                 </div>
-                <div class="info-value"><?php echo htmlspecialchars($nip); ?></div>
+                <div class="info-value"><?php echo htmlspecialchars($fisik['nip']); ?></div>
             </div>
         </div>
     </div>
-    <?php endif; ?>
 
     <!-- Form Card -->
     <div class="form-card">
         <form method="POST" action="" id="formFisik">
-            
-            <!-- Section 0: Pilih Pegawai -->
-            <div class="form-section">
-                <div class="form-section-header">
-                    <i class="fas fa-user-circle"></i>
-                    <h5>Pilih Pegawai</h5>
-                </div>
-                <div class="form-section-body">
-                    <div class="row">
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label">
-                                Nama Pegawai <span class="text-danger">*</span>
-                            </label>
-                            <?php if ($countAvailable > 0): ?>
-                                <div class="input-group">
-                                    <span class="input-icon">
-                                        <i class="fas fa-search"></i>
-                                    </span>
-                                    <select name="idPegawai" id="idPegawai" class="form-control" required onchange="updatePegawaiInfo(this)">
-                                        <option value="" selected disabled>-- Pilih Pegawai (<?php echo $countAvailable; ?> pegawai tersedia) --</option>
-                                        <?php while($row = mysqli_fetch_assoc($resultAllPegawai)): ?>
-                                            <option value="<?php echo htmlspecialchars($row['idPegawai']); ?>" 
-                                                    data-nip="<?php echo htmlspecialchars($row['nip']); ?>"
-                                                    data-nama="<?php echo htmlspecialchars($row['namaDenganGelar']); ?>"
-                                                    <?php echo ($idPegawai == $row['idPegawai']) ? 'selected' : ''; ?>>
-                                                <?php echo htmlspecialchars($row['namaDenganGelar']) . ' - ' . htmlspecialchars($row['nip']); ?>
-                                            </option>
-                                        <?php endwhile; ?>
-                                    </select>
-                                </div>
-                                <small class="form-text text-success">
-                                    <i class="fas fa-info-circle"></i> Menampilkan pegawai yang belum memiliki data kepegawaian
-                                </small>
-                            <?php else: ?>
-                            <div class="alert alert-warning" role="alert">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <strong>Tidak Ada Pegawai Tersedia</strong>
-                                <p class="mb-0">Semua pegawai sudah memiliki data kepegawaian. Silakan kelola data kepegawaian yang ada di halaman <a href="../list-kepegawaian.php" class="alert-link">Daftar Kepegawaian</a>.</p>
-                            </div>
-                            <div class="input-group">
-                                <span class="input-icon">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <select name="idPegawai" id="idPegawai" class="form-control" disabled>
-                                    <option value="">-- Tidak ada pegawai tersedia --</option>
-                                </select>
-                            </div>
-                            <?php endif; ?>
-                            <small class="form-text">Pilih pegawai untuk menambahkan data fisik</small>
-                        </div>
-                    </div>
-                    
-                    <!-- Info pegawai yang dipilih (ditampilkan secara dinamis) -->
-                    <div id="pegawaiInfoPreview" class="mt-3" style="display: <?php echo ($idPegawai !== '' ? 'block' : 'none'); ?>;">
-                        <div class="alert alert-info mb-0">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <strong><i class="fas fa-user"></i> Nama:</strong>
-                                    <span id="previewNama"><?php echo htmlspecialchars($namaDenganGelar); ?></span>
-                                </div>
-                                <div class="col-md-6">
-                                    <strong><i class="fas fa-id-card"></i> NIP:</strong>
-                                    <span id="previewNip"><?php echo htmlspecialchars($nip); ?></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- Section 1: Ukuran Tubuh -->
             <div class="form-section">
@@ -205,6 +126,7 @@ include '../../../includes/sidebar.php';
                                        placeholder="Contoh: 170"
                                        min="100"
                                        max="250"
+                                       value="<?php echo htmlspecialchars($fisik['tinggiBadan']); ?>"
                                        required>
                             </div>
                             <small class="form-text">
@@ -227,6 +149,7 @@ include '../../../includes/sidebar.php';
                                        placeholder="Contoh: 65"
                                        min="30"
                                        max="200"
+                                       value="<?php echo htmlspecialchars($fisik['beratBadan']); ?>"
                                        required>
                             </div>
                             <small class="form-text">
@@ -236,7 +159,7 @@ include '../../../includes/sidebar.php';
                         </div>
                     </div>
 
-                    <!-- BMI Calculator Display (Optional) -->
+                    <!-- BMI Calculator Display -->
                     <div class="bmi-display" id="bmiDisplay" style="display: none;">
                         <div class="alert alert-info-custom">
                             <i class="fas fa-calculator me-2"></i>
@@ -267,11 +190,11 @@ include '../../../includes/sidebar.php';
                                     <i class="fas fa-wave-square"></i>
                                 </span>
                                 <select name="jenisRambut" class="form-control" required>
-                                    <option value="" disabled selected>Pilih Jenis Rambut</option>
-                                    <option value="Lurus">Lurus</option>
-                                    <option value="Berombak">Berombak</option>
-                                    <option value="Ikal">Ikal</option>
-                                    <option value="Keriting">Keriting</option>
+                                    <option value="" disabled>Pilih Jenis Rambut</option>
+                                    <option value="Lurus" <?php echo ($fisik['jenisRambut'] == 'Lurus') ? 'selected' : ''; ?>>Lurus</option>
+                                    <option value="Berombak" <?php echo ($fisik['jenisRambut'] == 'Berombak') ? 'selected' : ''; ?>>Berombak</option>
+                                    <option value="Ikal" <?php echo ($fisik['jenisRambut'] == 'Ikal') ? 'selected' : ''; ?>>Ikal</option>
+                                    <option value="Keriting" <?php echo ($fisik['jenisRambut'] == 'Keriting') ? 'selected' : ''; ?>>Keriting</option>
                                 </select>
                             </div>
                             <small class="form-text">
@@ -289,13 +212,13 @@ include '../../../includes/sidebar.php';
                                     <i class="fas fa-palette"></i>
                                 </span>
                                 <select name="warnaRambut" class="form-control" required>
-                                    <option value="" disabled selected>Pilih Warna Rambut</option>
-                                    <option value="Hitam">Hitam</option>
-                                    <option value="Coklat Tua">Coklat Tua</option>
-                                    <option value="Coklat Muda">Coklat Muda</option>
-                                    <option value="Pirang">Pirang</option>
-                                    <option value="Merah">Merah</option>
-                                    <option value="Putih/Uban">Putih/Uban</option>
+                                    <option value="" disabled>Pilih Warna Rambut</option>
+                                    <option value="Hitam" <?php echo ($fisik['warnaRambut'] == 'Hitam') ? 'selected' : ''; ?>>Hitam</option>
+                                    <option value="Coklat Tua" <?php echo ($fisik['warnaRambut'] == 'Coklat Tua') ? 'selected' : ''; ?>>Coklat Tua</option>
+                                    <option value="Coklat Muda" <?php echo ($fisik['warnaRambut'] == 'Coklat Muda') ? 'selected' : ''; ?>>Coklat Muda</option>
+                                    <option value="Pirang" <?php echo ($fisik['warnaRambut'] == 'Pirang') ? 'selected' : ''; ?>>Pirang</option>
+                                    <option value="Merah" <?php echo ($fisik['warnaRambut'] == 'Merah') ? 'selected' : ''; ?>>Merah</option>
+                                    <option value="Putih/Uban" <?php echo ($fisik['warnaRambut'] == 'Putih/Uban') ? 'selected' : ''; ?>>Putih/Uban</option>
                                 </select>
                             </div>
                             <small class="form-text">
@@ -324,13 +247,13 @@ include '../../../includes/sidebar.php';
                                     <i class="fas fa-smile"></i>
                                 </span>
                                 <select name="bentukWajah" class="form-control" required>
-                                    <option value="" disabled selected>Pilih Bentuk Wajah</option>
-                                    <option value="Bulat">Bulat</option>
-                                    <option value="Oval">Oval</option>
-                                    <option value="Persegi">Persegi</option>
-                                    <option value="Hati">Hati</option>
-                                    <option value="Lonjong">Lonjong</option>
-                                    <option value="Diamond">Diamond</option>
+                                    <option value="" disabled>Pilih Bentuk Wajah</option>
+                                    <option value="Bulat" <?php echo ($fisik['bentukWajah'] == 'Bulat') ? 'selected' : ''; ?>>Bulat</option>
+                                    <option value="Oval" <?php echo ($fisik['bentukWajah'] == 'Oval') ? 'selected' : ''; ?>>Oval</option>
+                                    <option value="Persegi" <?php echo ($fisik['bentukWajah'] == 'Persegi') ? 'selected' : ''; ?>>Persegi</option>
+                                    <option value="Hati" <?php echo ($fisik['bentukWajah'] == 'Hati') ? 'selected' : ''; ?>>Hati</option>
+                                    <option value="Lonjong" <?php echo ($fisik['bentukWajah'] == 'Lonjong') ? 'selected' : ''; ?>>Lonjong</option>
+                                    <option value="Diamond" <?php echo ($fisik['bentukWajah'] == 'Diamond') ? 'selected' : ''; ?>>Diamond</option>
                                 </select>
                             </div>
                             <small class="form-text">
@@ -348,13 +271,13 @@ include '../../../includes/sidebar.php';
                                     <i class="fas fa-hand-paper"></i>
                                 </span>
                                 <select name="warnaKulit" class="form-control" required>
-                                    <option value="" disabled selected>Pilih Warna Kulit</option>
-                                    <option value="Putih">Putih</option>
-                                    <option value="Kuning Langsat">Kuning Langsat</option>
-                                    <option value="Sawo Matang">Sawo Matang</option>
-                                    <option value="Coklat">Coklat</option>
-                                    <option value="Coklat Gelap">Coklat Gelap</option>
-                                    <option value="Hitam">Hitam</option>
+                                    <option value="" disabled>Pilih Warna Kulit</option>
+                                    <option value="Putih" <?php echo ($fisik['warnaKulit'] == 'Putih') ? 'selected' : ''; ?>>Putih</option>
+                                    <option value="Kuning Langsat" <?php echo ($fisik['warnaKulit'] == 'Kuning Langsat') ? 'selected' : ''; ?>>Kuning Langsat</option>
+                                    <option value="Sawo Matang" <?php echo ($fisik['warnaKulit'] == 'Sawo Matang') ? 'selected' : ''; ?>>Sawo Matang</option>
+                                    <option value="Coklat" <?php echo ($fisik['warnaKulit'] == 'Coklat') ? 'selected' : ''; ?>>Coklat</option>
+                                    <option value="Coklat Gelap" <?php echo ($fisik['warnaKulit'] == 'Coklat Gelap') ? 'selected' : ''; ?>>Coklat Gelap</option>
+                                    <option value="Hitam" <?php echo ($fisik['warnaKulit'] == 'Hitam') ? 'selected' : ''; ?>>Hitam</option>
                                 </select>
                             </div>
                             <small class="form-text">
@@ -362,8 +285,10 @@ include '../../../includes/sidebar.php';
                                 Pilih warna kulit yang paling mendekati
                             </small>
                         </div>
+                    </div>
 
-                        <div class="col-md-6 mb-3">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
                             <label class="form-label">
                                 Ciri Khusus <span class="text-danger">*</span>
                             </label>
@@ -371,16 +296,15 @@ include '../../../includes/sidebar.php';
                                 <span class="input-icon">
                                     <i class="fas fa-crosshairs"></i>
                                 </span>
-                                <input type="text" 
-                                       name="ciriKhusus" 
-                                       class="form-control"
-                                       min="30"
-                                       max="200"
-                                       required>
+                                <textarea name="ciriKhusus" 
+                                          class="form-control" 
+                                          rows="3"
+                                          placeholder="Contoh: Tahi lalat di pipi kiri, bekas luka di lengan kanan, dll."
+                                          required><?php echo htmlspecialchars($fisik['ciriKhusus']); ?></textarea>
                             </div>
                             <small class="form-text">
                                 <i class="fas fa-info-circle me-1"></i>
-                                Masukkan ciri khusus
+                                Masukkan ciri khusus yang mudah dikenali (tahi lalat, bekas luka, tato, dll.)
                             </small>
                         </div>
                     </div>
@@ -389,8 +313,11 @@ include '../../../includes/sidebar.php';
 
             <!-- Form Actions -->
             <div class="form-actions">
+                <a href="../list-fisik.php" class="btn-cancel">
+                    <i class="fas fa-times me-2"></i>Batal
+                </a>
                 <button type="submit" name="submit" class="btn-submit">
-                    <i class="fas fa-arrow-right me-2"></i>Selanjutnya
+                    <i class="fas fa-save me-2"></i>Simpan Perubahan
                 </button>
             </div>
         </form>
@@ -398,46 +325,6 @@ include '../../../includes/sidebar.php';
 </div>
 
 <script>
-// Function to update pegawai info preview
-function updatePegawaiInfo(selectElement) {
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
-    const previewDiv = document.getElementById('pegawaiInfoPreview');
-    
-    if (selectedOption.value) {
-        const nama = selectedOption.getAttribute('data-nama');
-        const nip = selectedOption.getAttribute('data-nip');
-        
-        document.getElementById('previewNama').textContent = nama;
-        document.getElementById('previewNip').textContent = nip;
-        previewDiv.style.display = 'block';
-    } else {
-        previewDiv.style.display = 'none';
-    }
-}
-
-// Auto scroll to active step
-document.addEventListener('DOMContentLoaded', function() {
-    const progressSteps = document.querySelector('.progress-steps');
-    const activeStep = document.querySelector('.step.active');
-    
-    if (progressSteps && activeStep) {
-        const scrollLeft = activeStep.offsetLeft - (progressSteps.offsetWidth / 2) + (activeStep.offsetWidth / 2);
-        progressSteps.scrollTo({
-            left: scrollLeft,
-            behavior: 'smooth'
-        });
-    }
-    
-    progressSteps.addEventListener('scroll', function() {
-        const isScrolledToEnd = this.scrollLeft + this.clientWidth >= this.scrollWidth - 10;
-        if (isScrolledToEnd) {
-            this.classList.add('scrolled-end');
-        } else {
-            this.classList.remove('scrolled-end');
-        }
-    });
-});
-
 // BMI Calculator
 function calculateBMI() {
     const tinggi = parseFloat(document.querySelector('input[name="tinggiBadan"]').value);
@@ -474,6 +361,11 @@ function calculateBMI() {
 // Add event listeners for BMI calculation
 document.querySelector('input[name="tinggiBadan"]').addEventListener('input', calculateBMI);
 document.querySelector('input[name="beratBadan"]').addEventListener('input', calculateBMI);
+
+// Calculate BMI on page load
+document.addEventListener('DOMContentLoaded', function() {
+    calculateBMI();
+});
 
 // Form validation
 document.getElementById('formFisik').addEventListener('submit', function(e) {

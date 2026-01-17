@@ -8,6 +8,9 @@
     else if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/view/') !== false) {
         $footer_logo_path = '../../../assets/logo_sigawai.png';
     }
+    else if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/edit/') !== false) {
+        $footer_logo_path = '../../../assets/logo_sigawai.png';
+    }
     else if (strpos($_SERVER['PHP_SELF'], '/pages/pegawai/') !== false) {
         $footer_logo_path = '../../assets/logo_sigawai.png';
     }

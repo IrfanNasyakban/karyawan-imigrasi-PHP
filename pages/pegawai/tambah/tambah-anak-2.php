@@ -53,7 +53,6 @@ if (isset($_POST['submit'])) {
 $queryAllPegawai = "SELECT p.idPegawai, p.namaDenganGelar, p.nip 
                     FROM pegawai p
                     LEFT JOIN anak an ON p.idPegawai = an.idPegawai
-                    WHERE an.idPegawai IS NULL
                     ORDER BY p.namaDenganGelar ASC";
 $resultAllPegawai = mysqli_query($conn, $queryAllPegawai);
 

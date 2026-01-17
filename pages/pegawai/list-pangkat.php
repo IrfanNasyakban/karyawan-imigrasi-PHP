@@ -14,6 +14,10 @@ if ($search != '') {
                 p.namaDenganGelar,
                 pk.pangkat,
                 pk.golonganRuang,
+                pk.tanggalSKPangkat,
+                pk.nomorSKPangkat,
+                pk.SKPangkatDari,
+                pk.uraianSKPangkat,
                 pk.tmtPangkat
               FROM pangkat pk
               LEFT JOIN pegawai p ON pk.idPegawai = p.idPegawai
@@ -28,6 +32,10 @@ if ($search != '') {
                 p.namaDenganGelar,
                 pk.pangkat,
                 pk.golonganRuang,
+                pk.tanggalSKPangkat,
+                pk.nomorSKPangkat,
+                pk.SKPangkatDari,
+                pk.uraianSKPangkat,
                 pk.tmtPangkat
               FROM pangkat pk
               LEFT JOIN pegawai p ON pk.idPegawai = p.idPegawai
@@ -186,6 +194,10 @@ include '../../includes/sidebar.php';
                         <th>Nama Pegawai</th>
                         <th>Pangkat</th>
                         <th>Golongan Ruang</th>
+                        <th>Tanggal SK Pangkat</th>
+                        <th>Nomor SK Pangkat</th>
+                        <th>SK Pangkat Dari</th>
+                        <th>Uraian SK Pangkat</th>
                         <th>TMT Pangkat</th>
                         <th>Aksi</th>
                     </tr>
@@ -205,6 +217,10 @@ include '../../includes/sidebar.php';
                                 <?php echo htmlspecialchars($row['golonganRuang']); ?>
                             </span>
                         </td>
+                        <td><?php echo htmlspecialchars($row['tanggalSKPangkat']); ?></td>
+                        <td><?php echo htmlspecialchars($row['nomorSKPangkat']); ?></td>
+                        <td><?php echo htmlspecialchars($row['SKPangkatDari']); ?></td>
+                        <td><?php echo htmlspecialchars($row['uraianSKPangkat']); ?></td>
                         <td><?php echo htmlspecialchars($row['tmtPangkat']); ?></td>
                         <td>
                             <a href="edit/edit-pangkat.php?id=<?php echo $row['idPangkat']; ?>" 

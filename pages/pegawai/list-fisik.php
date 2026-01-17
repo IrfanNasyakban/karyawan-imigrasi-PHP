@@ -17,7 +17,8 @@ if ($search != '') {
                 f.jenisRambut,
                 f.warnaRambut,
                 f.bentukWajah,
-                f.warnaKulit
+                f.warnaKulit,
+                f.ciriKhusus
               FROM fisik f
               LEFT JOIN pegawai p ON f.idPegawai = p.idPegawai
               WHERE p.namaDenganGelar LIKE '%$search%'
@@ -34,7 +35,8 @@ if ($search != '') {
                 f.jenisRambut,
                 f.warnaRambut,
                 f.bentukWajah,
-                f.warnaKulit
+                f.warnaKulit,
+                f.ciriKhusus
               FROM fisik f
               LEFT JOIN pegawai p ON f.idPegawai = p.idPegawai
               ORDER BY f.idFisik DESC";
@@ -196,6 +198,7 @@ include '../../includes/sidebar.php';
                         <th>Warna Rambut</th>
                         <th>Bentuk Wajah</th>
                         <th>Warna Kulit</th>
+                        <th>Ciri Khusus</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -214,6 +217,7 @@ include '../../includes/sidebar.php';
                         <td><?php echo htmlspecialchars($row['warnaRambut']); ?></td>
                         <td><?php echo htmlspecialchars($row['bentukWajah']); ?></td>
                         <td><?php echo htmlspecialchars($row['warnaKulit']); ?></td>
+                        <td><?php echo htmlspecialchars($row['ciriKhusus']); ?></td>
                         <td>
                             <a href="edit/edit-fisik.php?id=<?php echo $row['idFisik']; ?>" 
                                class="btn btn-warning btn-sm" 

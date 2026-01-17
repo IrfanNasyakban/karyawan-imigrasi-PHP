@@ -17,14 +17,15 @@ if (isset($_POST['submit'])) {
     $warnaRambut = mysqli_real_escape_string($conn, $_POST['warnaRambut'] ?? '');
     $bentukWajah = mysqli_real_escape_string($conn, $_POST['bentukWajah'] ?? '');
     $warnaKulit = mysqli_real_escape_string($conn, $_POST['warnaKulit'] ?? '');
+    $ciriKhusus = mysqli_real_escape_string($conn, $_POST['ciriKhusus'] ?? '');
 
     if ($idPegawai === '') {
         $error = "ID Pegawai kosong. Pastikan alur tambah pegawai benar.";
     } else {
         $query = "INSERT INTO fisik
-            (idPegawai, tinggiBadan, beratBadan, jenisRambut, warnaRambut, bentukWajah, warnaKulit)
+            (idPegawai, tinggiBadan, beratBadan, jenisRambut, warnaRambut, bentukWajah, warnaKulit, ciriKhusus)
             VALUES
-            ('$idPegawai', '$tinggiBadan', '$beratBadan', '$jenisRambut', '$warnaRambut', '$bentukWajah', '$warnaKulit')";
+            ('$idPegawai', '$tinggiBadan', '$beratBadan', '$jenisRambut', '$warnaRambut', '$bentukWajah', '$warnaKulit', '$ciriKhusus')";
 
         if (mysqli_query($conn, $query)) {
             header("Location: tambah-ukuran-dinas.php?idPegawai=$idPegawai&message=tambah");
@@ -346,6 +347,27 @@ include '../../includes/sidebar.php';
                             <small class="form-text">
                                 <i class="fas fa-info-circle me-1"></i>
                                 Pilih warna kulit yang paling mendekati
+                            </small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Ciri Khusus <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-crosshairs"></i>
+                                </span>
+                                <input type="text" 
+                                       name="ciriKhusus" 
+                                       class="form-control"
+                                       min="30"
+                                       max="200"
+                                       required>
+                            </div>
+                            <small class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Masukkan ciri khusus
                             </small>
                         </div>
                     </div>

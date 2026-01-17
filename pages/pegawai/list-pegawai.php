@@ -210,7 +210,7 @@ include '../../includes/sidebar.php';
                                title="Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="edit-pegawai.php?id=<?php echo $row['idPegawai']; ?>" 
+                            <a href="edit/edit-pegawai.php?id=<?php echo $row['idPegawai']; ?>" 
                                class="btn btn-warning btn-sm" 
                                title="Edit">
                                 <i class="fas fa-edit"></i>
