@@ -1,5 +1,6 @@
 <?php
 require_once '../../config/database.php';
+require_once '../../includes/check_login.php';
 
 $page_title = 'Tambah Data Alamat';
 

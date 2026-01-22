@@ -98,9 +98,38 @@ $is_dashboard = (basename($_SERVER['PHP_SELF']) == 'dashboard.php');
             height: auto;
         }
 
+        /* Logout Button */
+        .logout-section {
+            padding: 5px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-logout {
+            width: 50%;
+            padding: 5px 10px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-logout i {
+            font-size: 16px;
+        }
+
         /* Menu Section */
         .menu-section {
-            padding: 20px 0;
+            padding: 1px 0;
         }
 
         .menu-title {
@@ -280,6 +309,14 @@ $is_dashboard = (basename($_SERVER['PHP_SELF']) == 'dashboard.php');
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
+
+        <!-- Logout Button -->
+        <div class="logout-section">
+            <button class="btn-logout" onclick="confirmLogout()">
+                <span>Logout</span>
+            </button>
+        </div>
+
         <!-- Menu -->
         <div class="menu-section">
             <!-- Dashboard -->
@@ -293,6 +330,12 @@ $is_dashboard = (basename($_SERVER['PHP_SELF']) == 'dashboard.php');
             <!-- Data Pegawai -->
             <h6 class="menu-title">Data Pegawai</h6>
 
+            <a href="/karyawan-imigrasi/pages/pegawai/filter.php" 
+               class="menu-item <?php echo (basename($_SERVER['PHP_SELF']) == 'filter.php') ? 'active' : ''; ?>">
+                <i class="fas fa-filter"></i>
+                <span>Filter</span>
+            </a>
+            
             <a href="/karyawan-imigrasi/pages/pegawai/list-pegawai.php" 
                class="menu-item <?php echo (basename($_SERVER['PHP_SELF']) == 'list-pegawai.php') ? 'active' : ''; ?>">
                 <i class="fas fa-user"></i>
@@ -388,6 +431,13 @@ $is_dashboard = (basename($_SERVER['PHP_SELF']) == 'dashboard.php');
 
         function toggleSubmenu() {
             document.getElementById('submenu-keluarga').classList.toggle('show');
+        }
+
+        // Konfirmasi logout
+        function confirmLogout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                window.location.href = '/karyawan-imigrasi/pages/logout.php';
+            }
         }
 
         // Auto expand submenu jika halaman submenu aktif
